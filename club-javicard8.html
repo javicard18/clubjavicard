@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Club Javicard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1b2a;--blue:#1a3a5c;--accent:#e8a020;--accent2:#f0c050;--light:#f4f6fa;--white:#fff;--green:#22c55e;--red:#ef4444;--gray:#8899aa;--card:#fff;--border:#e2e8f0;--text:#1a2535;--subtext:#64748b;--bronze:#b45309;--silver:#64748b;--gold:#d97706}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--light);color:var(--text);min-height:100vh}
+#loginScreen{min-height:100vh;background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 60%,#1e4a7a 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.login-logo{text-align:center;margin-bottom:40px}
+.login-logo .brand{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;color:#fff;letter-spacing:-1px}
+.login-logo .sub{font-size:.85rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;font-weight:500}
+.login-card{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-card h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:6px;color:var(--navy)}
+.login-card p{font-size:.85rem;color:var(--subtext);margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.8rem;font-weight:500;color:var(--subtext);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:var(--text);background:var(--light);transition:border-color .2s;outline:none}
+.field input:focus,.field select:focus{border-color:var(--blue);background:#fff}
+.btn-primary{width:100%;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;letter-spacing:.3px}
+.btn-primary:hover{background:var(--blue)}
+.btn-primary:active{transform:scale(.98)}
+.btn-accent{background:var(--accent);color:var(--navy)}
+.btn-accent:hover{background:var(--accent2)}
+.btn-sm{padding:8px 16px;font-size:.85rem;border-radius:8px;width:auto}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;padding:8px 14px;border-radius:8px;cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:var(--navy);color:var(--navy)}
+.login-switch{text-align:center;margin-top:20px;font-size:.85rem;color:rgba(255,255,255,.7)}
+.login-switch a{color:var(--accent);cursor:pointer;font-weight:600;text-decoration:none}
+#app{display:none;min-height:100vh;flex-direction:column}
+.topbar{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.topbar-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;letter-spacing:-.5px}
+.topbar-brand span{color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.user-badge{background:rgba(255,255,255,.1);padding:5px 12px;border-radius:20px;font-size:.8rem;font-weight:500}
+.btn-logout{background:none;border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 12px;border-radius:20px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-logout:hover{background:rgba(255,255,255,.1)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;z-index:100;box-shadow:0 -4px 20px rgba(0,0,0,.08);overflow-x:auto}
+.nav-item{flex:1;min-width:56px;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;color:var(--gray);font-size:.62rem;font-weight:500;transition:color .2s;white-space:nowrap}
+.nav-item.active{color:var(--navy)}
+.nav-item svg{width:20px;height:20px}
+.content{flex:1;padding:20px 16px 90px;max-width:520px;margin:0 auto;width:100%}
+.screen{display:none}
+.screen.active{display:block}
+.card{background:var(--card);border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--navy);margin-bottom:14px}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.stat-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--card);border-radius:14px;padding:14px;border:1px solid var(--border);text-align:center}
+.stat-num{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--navy);line-height:1}
+.stat-label{font-size:.72rem;color:var(--subtext);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.hero-card{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);border-radius:20px;padding:24px;color:#fff;margin-bottom:14px;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.05);border-radius:50%}
+.hero-greeting{font-size:.85rem;opacity:.7;margin-bottom:4px}
+.hero-name{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:4px}
+.nivel-badge-hero{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.75rem;font-weight:700;margin-bottom:12px}
+.hero-points-label{font-size:.75rem;opacity:.7;text-transform:uppercase;letter-spacing:1px}
+.hero-points-num{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:var(--accent);line-height:1}
+.hero-points-unit{font-size:.9rem;opacity:.8;margin-top:2px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.73rem;font-weight:600;letter-spacing:.3px}
+.badge-green{background:#dcfce7;color:#16a34a}
+.badge-yellow{background:#fef9c3;color:#a16207}
+.badge-red{background:#fee2e2;color:#dc2626}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-gray{background:#f1f5f9;color:#64748b}
+.badge-bronze{background:#fef3c7;color:var(--bronze)}
+.badge-silver{background:#f1f5f9;color:var(--silver)}
+.badge-gold{background:#fef9c3;color:var(--gold)}
+.list-item{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);gap:12px}
+.list-item:last-child{border-bottom:none;padding-bottom:0}
+.avatar{width:40px;height:40px;background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;flex-shrink:0}
+.list-info{flex:1;min-width:0}
+.list-name{font-weight:600;font-size:.9rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-sub{font-size:.78rem;color:var(--subtext);margin-top:1px}
+.list-right{text-align:right;flex-shrink:0}
+.pts-num{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--navy)}
+.search-wrap{position:relative;margin-bottom:14px}
+.search-wrap input{width:100%;padding:12px 16px 12px 42px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.9rem;background:#fff;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--blue)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gray)}
+.search-results{background:#fff;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-top:-8px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.08);display:none}
+.search-result-item{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .15s;border-bottom:1px solid var(--border)}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item:hover{background:var(--light)}
+.premio-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px}
+.premio-img{width:100%;height:140px;object-fit:cover;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:3rem}
+.premio-img img{width:100%;height:140px;object-fit:cover}
+.premio-body{padding:14px}
+.premio-name{font-weight:700;font-size:.95rem;color:var(--text)}
+.premio-pts{font-size:.8rem;color:var(--subtext);margin-top:2px}
+.rank-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.rank-item:last-child{border-bottom:none}
+.rank-num{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;width:28px;text-align:center;color:var(--gray);flex-shrink:0}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;color:var(--navy)}
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 20px;border-radius:12px;font-size:.88rem;font-weight:500;z-index:999;opacity:0;transition:all .3s;white-space:nowrap;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.success{background:#16a34a}
+#toast.error{background:var(--red)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative}
+.modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:var(--navy);margin-bottom:6px}
+.modal-sub{font-size:.85rem;color:var(--subtext);margin-bottom:20px}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--light);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.alert{padding:12px 14px;border-radius:10px;font-size:.85rem;margin-bottom:14px}
+.alert-blue{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
+.alert-green{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+.alert-yellow{background:#fefce8;color:#a16207;border:1px solid #fde68a}
+.alert-red{background:#fee2e2;color:#dc2626;border:1px solid #fecaca}
+.alert-orange{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.empty{text-align:center;padding:32px 20px;color:var(--subtext);font-size:.9rem}
+.empty-icon{font-size:2.5rem;margin-bottom:10px}
+.tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.tab{flex:1;min-width:60px;padding:9px 6px;border:1.5px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;color:var(--subtext);transition:all .2s;text-align:center}
+.tab.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:600}
+.selected-client{display:flex;align-items:center;gap:10px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.selected-client .name{font-weight:600;font-size:.9rem}
+.selected-client .pts{font-size:.8rem;color:var(--subtext)}
+.selected-client .change{color:var(--blue);font-size:.8rem;cursor:pointer;margin-left:auto;font-weight:500}
+.pts-preview{background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:.88rem;color:#a16207;font-weight:500}
+.canje-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.canje-item:last-child{border-bottom:none}
+.canje-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.canje-name{font-weight:600;font-size:.9rem}
+.canje-meta{font-size:.78rem;color:var(--subtext);margin-top:2px}
+.canje-actions{display:flex;gap:6px;margin-top:8px}
+.config-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.config-row:last-child{border-bottom:none}
+.config-label{font-size:.88rem;font-weight:500}
+.config-sub{font-size:.75rem;color:var(--subtext);margin-top:2px}
+.config-val{font-family:'Syne',sans-serif;font-weight:700;color:var(--navy);font-size:.95rem}
+.nivel-card{border-radius:12px;padding:14px;margin-bottom:10px;border:2px solid}
+.bday-card{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.bday-card:last-child{border-bottom:none}
+.mov-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.mov-item:last-child{border-bottom:none}
+.mov-header{display:flex;justify-content:space-between;align-items:center}
+.mov-cliente{font-weight:600}
+.mov-pts{font-family:'Syne',sans-serif;font-weight:700}
+.mov-meta{font-size:.75rem;color:var(--subtext);margin-top:2px}
+.alarma-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.alarma-item:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-logo">
+    <div class="brand">Club <span style="color:var(--accent)">Javicard</span></div>
+    <div class="sub">Programa de puntos</div>
+  </div>
+  <div class="login-card">
+    <h2>Iniciar sesión</h2>
+    <p>Ingresá tus datos para continuar</p>
+    <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="tu@email.com"></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+    <div id="loginError" style="color:var(--red);font-size:.83rem;margin-bottom:12px;display:none"></div>
+    <button class="btn-primary" onclick="doLogin()">Entrar</button>
+  </div>
+  <div class="login-switch">¿Sos cliente? <a onclick="showRegister()">Registrarse</a></div>
+  <div id="registerCard" class="login-card" style="display:none;margin-top:14px">
+    <h2>Crear cuenta</h2>
+    <p>Completá tus datos para unirte al Club</p>
+    <div class="field"><label>Nombre completo</label><input type="text" id="regNombre" placeholder="Juan Pérez"></div>
+    <div class="field"><label>DNI</label><input type="text" id="regDni" placeholder="12345678" inputmode="numeric"></div>
+    <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="tu@email.com"></div>
+    <div class="field"><label>Contraseña</label><input type="password" id="regPass" placeholder="Mínimo 6 caracteres"></div>
+    <div class="field"><label>Teléfono</label><input type="text" id="regTel" placeholder="3885123456" inputmode="numeric"></div>
+    <div class="field"><label>Fecha de nacimiento</label><input type="date" id="regBday"></div>
+    <div id="regError" style="color:var(--red);font-size:.83rem;margin-bottom:12px;display:none"></div>
+    <button class="btn-primary btn-accent" onclick="doRegister()" style="margin-bottom:10px">Crear cuenta</button>
+    <button class="btn-outline" style="width:100%" onclick="hideRegister()">← Volver</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;flex-direction:column;min-height:100vh">
+  <div class="topbar">
+    <div class="topbar-brand">Club <span>Javicard</span></div>
+    <div class="topbar-right">
+      <div class="user-badge" id="topUserName"></div>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ADMIN: PUNTOS -->
+    <div class="screen" id="screen-puntos">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('tab-cargar',this)">+ Cargar</button>
+        <button class="tab" onclick="switchTab('tab-canjear',this)">↩ Canjear</button>
+      </div>
+
+      <div id="tab-cargar">
+        <div class="card">
+          <div class="card-title">Registrar venta</div>
+          <div class="search-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="buscarClienteCargar" placeholder="Nombre, email o DNI..." oninput="buscarCliente(this.value,'cargar')">
+          </div>
+          <div class="search-results" id="resultsCargar"></div>
+          <div id="clienteSelCargar" style="display:none">
+            <div class="selected-client">
+              <div class="avatar" id="avatarCargar"></div>
+              <div><div class="name" id="nombreCargar"></div><div class="pts" id="ptsCargar"></div></div>
+              <span class="change" onclick="limpiarClienteCargar()">cambiar</span>
+            </div>
+            <div class="field"><label>N° de ticket *</label><input type="text" id="numTicket" placeholder="Ej: 00234" required></div>
+            <div class="field"><label>Monto de la venta ($) *</label><input type="number" id="montoVenta" placeholder="0" inputmode="numeric" oninput="calcularPuntos()"></div>
+            <div class="pts-preview" id="ptsPreview" style="display:none"></div>
+            <button class="btn-primary" onclick="registrarVenta()">+ Registrar venta</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-header">
+            <div class="card-title">Cargas del día</div>
+            <span style="font-size:.8rem;color:var(--subtext)" id="fechaHoyLabel"></span>
+          </div>
+          <div id="listaCargasHoy"><div class="empty"><div class="empty-icon">📋</div>Sin cargas hoy</div></div>
+        </div>
+      </div>
+
+      <div id="tab-canjear" style="display:none">
+        <div class="card">
+          <div class="card-title">Canjear premio</div>
+          <div class="search-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="buscarClienteCanjear" placeholder="Nombre, email o DNI..." oninput="buscarCliente(this.value,'canjear')">
+          </div>
+          <div class="search-results" id="resultsCanjear"></div>
+          <div id="clienteSelCanjear" style="display:none">
+            <div class="selected-client">
+              <div class="avatar" id="avatarCanjear"></div>
+              <div><div class="name" id="nombreCanjear"></div><div class="pts" id="ptsCanjear"></div></div>
+              <span class="change" onclick="limpiarClienteCanjear()">cambiar</span>
+            </div>
+            <div class="field" style="margin-top:4px"><label>Premio a canjear</label>
+              <select id="selectPremio" onchange="onSelectPremio()"><option value="">— Seleccioná un premio —</option></select>
+            </div>
+            <div id="premioInfo" style="display:none;margin-bottom:14px">
+              <div class="pts-preview" id="premioInfoTxt"></div>
+            </div>
+            <button class="btn-primary btn-accent" onclick="ejecutarCanje()">↩ Confirmar canje</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Canjes pendientes</div>
+          <div id="listaSolicitudes"><div class="empty"><div class="empty-icon">✅</div>Sin solicitudes</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Solicitudes de puntos</div>
+          <div id="listaSolicitudesPuntos"><div class="empty"><div class="empty-icon">📋</div>Sin solicitudes</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN: ESTADÍSTICAS -->
+    <div class="screen" id="screen-stats">
+      <div class="section-title" style="margin-bottom:14px">📊 Estadísticas</div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num" id="st-clientes">0</div><div class="stat-label">Clientes</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-puntos">0</div><div class="stat-label">Puntos entregados</div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num" id="st-canjes">0</div><div class="stat-label">Canjes totales</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-ventas">0</div><div class="stat-label">Ventas registradas</div></div>
+      </div>
+      <div class="stat-row-3">
+        <div class="stat-card"><div class="stat-num" style="font-size:1.2rem;color:var(--bronze)" id="st-bronce">0</div><div class="stat-label">🥉 Bronce</div></div>
+        <div class="stat-card"><div class="stat-num" style="font-size:1.2rem;color:var(--silver)" id="st-plata">0</div><div class="stat-label">🥈 Plata</div></div>
+        <div class="stat-card"><div class="stat-num" style="font-size:1.2rem;color:var(--gold)" id="st-oro">0</div><div class="stat-label">🥇 Oro</div></div>
+      </div>
+
+      <!-- ALERTAS DE PUNTOS POR VENCER -->
+      <div class="card">
+        <div class="card-title">🔔 Alertas — Puntos por descontarse</div>
+        <div id="listaAlarmas"><div class="empty"><div class="empty-icon">✅</div>Sin alertas</div></div>
+      </div>
+
+      <!-- SOLICITUDES PUNTOS RESUMEN -->
+      <div class="card">
+        <div class="section-header">
+          <div class="card-title">📋 Solicitudes de puntos hoy</div>
+          <button class="btn-outline btn-sm" onclick="navTo('puntos',document.querySelector('#navAdmin .nav-item'));setTimeout(()=>switchTab('tab-canjear',document.querySelectorAll('.tabs .tab')[1]),100)">Ver todas</button>
+        </div>
+        <div id="statsResumenSolicitudes"></div>
+      </div>
+
+      <!-- CUMPLEAÑOS DEL MES -->
+      <div class="card">
+        <div class="card-title">🎂 Cumpleaños este mes</div>
+        <div id="listaBdays"><div class="empty"><div class="empty-icon">🎂</div>Sin cumpleaños este mes</div></div>
+      </div>
+
+      <!-- MOVIMIENTOS -->
+      <div class="card">
+        <div class="section-header">
+          <div class="card-title">Movimientos</div>
+          <select id="filtroMovs" onchange="renderMovimientos()" style="font-size:.8rem;padding:4px 8px;border:1px solid var(--border);border-radius:8px">
+            <option value="todos">Todos</option>
+            <option value="venta">Ventas</option>
+            <option value="canje">Canjes</option>
+            <option value="descuento">Descuentos auto</option>
+          </select>
+        </div>
+        <div id="listaMovimientos"><div class="empty"><div class="empty-icon">📋</div>Sin movimientos</div></div>
+      </div>
+    </div>
+
+    <!-- ADMIN: CLIENTES -->
+    <div class="screen" id="screen-clientes">
+      <div class="section-header">
+        <div class="section-title">Clientes</div>
+        <button class="btn-primary btn-sm" onclick="openModalAgregarCliente()">+ Agregar</button>
+      </div>
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="buscarClienteLista" placeholder="Buscar..." oninput="renderClientes()">
+      </div>
+      <div class="card" style="padding:0"><div id="listaClientes" style="padding:8px 18px"></div></div>
+    </div>
+
+    <!-- ADMIN: PREMIOS -->
+    <div class="screen" id="screen-premios">
+      <div class="section-header">
+        <div class="section-title">Premios</div>
+        <button class="btn-primary btn-sm" onclick="openModalAgregarPremio()">+ Nuevo</button>
+      </div>
+      <div id="listaPremiosAdmin"></div>
+    </div>
+
+    <!-- ADMIN: GIFTCARDS -->
+    <div class="screen" id="screen-giftcards">
+      <div class="section-header">
+        <div class="section-title">🎁 GiftCards</div>
+        <button class="btn-primary btn-sm btn-accent" onclick="openModal('modalGiftcard')">+ Nueva</button>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">Buscar por código</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="inputBuscarCodigo" placeholder="CJ-ABC-123 o código de canje" style="flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none">
+          <button class="btn-primary btn-sm" onclick="buscarCodigo()">Buscar</button>
+        </div>
+        <div id="resultBuscarCodigo" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">GiftCards creadas</div>
+        <div id="listaGiftcards"><div class="empty"><div class="empty-icon">🎁</div>Sin GiftCards</div></div>
+      </div>
+    </div>
+
+    <!-- ADMIN: CONFIGURACIÓN -->
+    <div class="screen" id="screen-config">
+      <div class="section-title" style="margin-bottom:14px">⚙️ Configuración</div>
+
+      <div class="card">
+        <div class="card-title">Regla de puntos</div>
+        <div class="config-row">
+          <div><div class="config-label">Pesos por punto</div><div class="config-sub">Cada X pesos gastados = 1 punto</div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="cfgPesosPorPunto" style="width:90px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem" placeholder="475">
+            <button class="btn-outline" onclick="guardarConfig()">OK</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Descuento automático</div>
+        <div class="alert alert-yellow">Los puntos se restan automáticamente si el cliente no compra en X días</div>
+        <div class="config-row">
+          <div><div class="config-label">Días sin comprar</div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="cfgDiasSinComprar" style="width:70px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem" placeholder="15">
+          </div>
+        </div>
+        <div class="config-row">
+          <div><div class="config-label">Puntos a descontar</div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="cfgPtsDescuento" style="width:70px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem" placeholder="20">
+          </div>
+        </div>
+        <button class="btn-primary" onclick="guardarConfig()" style="margin-top:10px">Guardar descuento</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Niveles de cliente</div>
+        <div class="alert alert-blue">Definí cuántos puntos acumulados necesita cada nivel</div>
+        <div class="nivel-card" style="border-color:var(--bronze);background:#fffbeb">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>🥉 Bronce</strong><div style="font-size:.78rem;color:var(--subtext)">Puntos mínimos</div></div>
+            <input type="number" id="cfgBronce" style="width:80px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem" placeholder="100">
+          </div>
+        </div>
+        <div class="nivel-card" style="border-color:var(--silver);background:#f8fafc">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>🥈 Plata</strong><div style="font-size:.78rem;color:var(--subtext)">Puntos mínimos</div></div>
+            <input type="number" id="cfgPlata" style="width:80px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem" placeholder="200">
+          </div>
+        </div>
+        <div class="nivel-card" style="border-color:var(--gold);background:#fffdf0">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div><strong>🥇 Oro</strong><div style="font-size:.78rem;color:var(--subtext)">Puntos mínimos</div></div>
+            <input type="number" id="cfgOro" style="width:80px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem" placeholder="300">
+          </div>
+        </div>
+        <button class="btn-primary" onclick="guardarConfig()" style="margin-top:4px">Guardar niveles</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Canjes máximos por mes</div>
+        <div class="config-row">
+          <div><div class="config-label">Canjes por mes por cliente</div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="cfgMaxCanjes" style="width:70px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem" placeholder="2">
+            <button class="btn-outline" onclick="guardarConfig()">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CLIENTE SCREENS ===== -->
+    <div class="screen" id="screen-cliente-inicio">
+      <div id="heroCard" class="hero-card">
+        <div class="hero-greeting">Hola 👋</div>
+        <div class="hero-name" id="clienteNombreHero"></div>
+        <div id="clienteNivelBadge" class="nivel-badge-hero" style="margin-bottom:12px"></div>
+        <div class="hero-points-label">Tus puntos</div>
+        <div class="hero-points-num" id="clientePtsHero">0</div>
+        <div class="hero-points-unit">puntos Club Javicard</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num" id="clienteCanjesHero">0</div><div class="stat-label">Canjes usados</div></div>
+        <div class="stat-card"><div class="stat-num" id="clienteCanjesDisp">2</div><div class="stat-label">Disp. este mes</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Tu nivel</div>
+        <div id="clienteNivelInfo"></div>
+      </div>
+      <div id="alertaDescuento" style="display:none" class="alert alert-orange">
+        ⚠️ <span id="alertaDescuentoTxt"></span>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-cliente-premios">
+      <div class="section-title" style="margin-bottom:14px">🎁 Catálogo de premios</div>
+      <div class="alert alert-blue" id="clientePtsDisp"></div>
+      <div id="listaPremiosCliente"></div>
+    </div>
+
+    <div class="screen" id="screen-cliente-ranking">
+      <div class="section-title" style="margin-bottom:14px">🏆 Ranking del Club</div>
+      <div class="card" style="padding:12px 18px"><div id="listaRanking"></div></div>
+      <div class="card" style="margin-top:0">
+        <div class="alert alert-yellow" id="alertaRankingReglas"></div>
+      </div>
+    </div>
+
+    <div class="screen" id="screen-cliente-canjes">
+      <div class="section-title" style="margin-bottom:14px">Mis canjes</div>
+      <div class="card" style="padding:12px 18px"><div id="misCanjes"><div class="empty"><div class="empty-icon">🎁</div>Aún no hiciste canjes</div></div></div>
+    </div>
+
+    <div class="screen" id="screen-cliente-solicitar">
+      <div class="section-title" style="margin-bottom:6px">📋 Solicitar puntos</div>
+      <div class="alert alert-blue" style="margin-bottom:14px">Ingresá el número de ticket de tu compra y te acreditamos los puntos cuando lo verifiquemos.</div>
+      <div class="card">
+        <div class="field"><label>N° de ticket *</label><input type="text" id="solTicket" placeholder="Ej: 00234" style="text-transform:uppercase"></div>
+        <div class="alert alert-yellow" style="font-size:.82rem">⚠️ El ticket será verificado. Si ya fue usado o es incorrecto, la solicitud será rechazada.</div>
+        <button class="btn-primary btn-accent" onclick="enviarSolicitudPuntos()">Enviar solicitud</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Mis solicitudes de puntos</div>
+        <div id="misSolicitudesPuntos"><div class="empty"><div class="empty-icon">📋</div>Sin solicitudes</div></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- NAV ADMIN -->
+  <nav class="bottom-nav" id="navAdmin">
+    <button class="nav-item active" onclick="navTo('puntos',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Puntos
+    </button>
+    <button class="nav-item" onclick="navTo('stats',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Stats
+    </button>
+    <button class="nav-item" onclick="navTo('clientes',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clientes
+    </button>
+    <button class="nav-item" onclick="navTo('premios',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>Premios
+    </button>
+    <button class="nav-item" onclick="navTo('giftcards',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Gift
+    </button>
+    <button class="nav-item" onclick="navTo('config',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Config
+    </button>
+  </nav>
+
+  <!-- NAV CLIENTE -->
+  <nav class="bottom-nav" id="navCliente" style="display:none">
+    <button class="nav-item active" onclick="navClienteTo('cliente-inicio',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Inicio
+    </button>
+    <button class="nav-item" onclick="navClienteTo('cliente-premios',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>Premios
+    </button>
+    <button class="nav-item" onclick="navClienteTo('cliente-solicitar',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Puntos
+    </button>
+    <button class="nav-item" onclick="navClienteTo('cliente-ranking',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Ranking
+    </button>
+    <button class="nav-item" onclick="navClienteTo('cliente-canjes',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Canjes
+    </button>
+  </nav>
+</div>
+
+<div id="toast"></div>
+
+<!-- MODAL: Código de canje (cliente) -->
+<div class="modal-overlay" id="codigoCanjeModal">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:3rem;margin-bottom:12px">🎉</div>
+    <div class="modal-title" style="text-align:center">¡Solicitud enviada!</div>
+    <div style="font-size:.85rem;color:var(--subtext);margin-bottom:20px">Mostrá este código en el local para retirar tu premio</div>
+    <div style="background:var(--light);border-radius:14px;padding:20px;margin-bottom:16px">
+      <div style="font-size:.75rem;color:var(--subtext);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Premio</div>
+      <div id="codigoCanjePremio" style="font-weight:600;font-size:1rem;margin-bottom:16px"></div>
+      <div style="font-size:.75rem;color:var(--subtext);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Tu código</div>
+      <div id="codigoCanjeDisplay" style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);letter-spacing:2px"></div>
+    </div>
+    <div class="alert alert-yellow" style="text-align:left;font-size:.82rem">Guardá este código. El local lo verificará antes de entregarte el premio.</div>
+    <button class="btn-primary" style="margin-top:12px" onclick="closeModal('codigoCanjeModal')">Entendido</button>
+  </div>
+</div>
+
+<!-- MODAL: Nueva GiftCard -->
+<div class="modal-overlay" id="modalGiftcard">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalGiftcard')">✕</button>
+    <div class="modal-title">Nueva GiftCard</div>
+    <div class="modal-sub">Creá una tarjeta de regalo para un cliente</div>
+    <div class="field"><label>Destinatario *</label><input type="text" id="gcDestinatario" placeholder="Nombre del destinatario"></div>
+    <div class="field"><label>Valor ($) *</label><input type="number" id="gcValor" placeholder="5000" inputmode="numeric"></div>
+    <div class="field"><label>Mensaje personalizado</label><input type="text" id="gcMensaje" placeholder="Feliz cumpleaños!"></div>
+    <div class="field"><label>Vencimiento (opcional)</label><input type="date" id="gcVencimiento"></div>
+    <div class="field"><label>Teléfono WhatsApp (opcional)</label><input type="text" id="gcTel" placeholder="3885123456" inputmode="numeric"></div>
+    <div id="gcError" style="color:var(--red);font-size:.83rem;margin-bottom:12px;display:none"></div>
+    <button class="btn-primary btn-accent" onclick="crearGiftcard()">Crear GiftCard</button>
+  </div>
+</div>
+
+<!-- MODAL: Ver GiftCard creada -->
+<div class="modal-overlay" id="modalGiftcardCreada">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:3rem;margin-bottom:12px">🎁</div>
+    <div class="modal-title" style="text-align:center">¡GiftCard creada!</div>
+    <div style="background:var(--light);border-radius:14px;padding:20px;margin:16px 0">
+      <div style="font-size:.75rem;color:var(--subtext);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Código</div>
+      <div id="gcCodigoDisplay" style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--navy);letter-spacing:2px;margin-bottom:12px"></div>
+      <div style="font-size:.75rem;color:var(--subtext);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Valor</div>
+      <div id="gcValorDisplay" style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;color:var(--accent)"></div>
+    </div>
+    <div id="gcWaBtn" style="margin-bottom:12px"></div>
+    <button class="btn-primary" onclick="closeModal('modalGiftcardCreada');renderGiftcards()">Cerrar</button>
+  </div>
+</div>
+
+<!-- MODAL CLIENTE -->
+<div class="modal-overlay" id="modalCliente">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalCliente')">✕</button>
+    <div class="modal-title" id="modalClienteTitulo">Agregar cliente</div>
+    <div class="modal-sub">Completá los datos del cliente</div>
+    <div class="field"><label>Nombre completo *</label><input type="text" id="mcNombre" placeholder="Juan Pérez"></div>
+    <div class="field"><label>DNI *</label><input type="text" id="mcDni" placeholder="12345678" inputmode="numeric"></div>
+    <div class="field"><label>Email *</label><input type="email" id="mcEmail" placeholder="juan@email.com"></div>
+    <div class="field"><label>Contraseña inicial *</label><input type="password" id="mcPass" placeholder="Mínimo 6 caracteres"></div>
+    <div class="field"><label>Teléfono</label><input type="text" id="mcTel" placeholder="3885123456" inputmode="numeric"></div>
+    <div class="field"><label>Fecha de nacimiento</label><input type="date" id="mcBday"></div>
+    <div class="field"><label>Puntos iniciales</label><input type="number" id="mcPts" placeholder="0" value="0" inputmode="numeric"></div>
+    <div id="mcError" style="color:var(--red);font-size:.83rem;margin-bottom:12px;display:none"></div>
+    <button class="btn-primary" onclick="guardarCliente()">Guardar cliente</button>
+  </div>
+</div>
+
+<!-- MODAL PREMIO -->
+<div class="modal-overlay" id="modalPremio">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalPremio')">✕</button>
+    <div class="modal-title" id="modalPremioTitulo">Nuevo premio</div>
+    <div class="modal-sub">Completá los datos del premio</div>
+    <div class="field"><label>Nombre *</label><input type="text" id="mpNombre" placeholder="Six Pack Quilmes"></div>
+    <div class="field"><label>URL de imagen</label><input type="text" id="mpImg" placeholder="https://... (link directo a la foto)"></div>
+    <div class="field"><label>Emoji (si no hay imagen)</label><input type="text" id="mpEmoji" placeholder="🍺" maxlength="2"></div>
+    <div class="field"><label>Descripción</label><input type="text" id="mpDesc" placeholder="6 cervezas Quilmes 340ml"></div>
+    <div class="field"><label>Puntos necesarios *</label><input type="number" id="mpPts" placeholder="80" inputmode="numeric"></div>
+    <div class="field"><label>Stock (vacío = ilimitado)</label><input type="number" id="mpStock" placeholder="10" inputmode="numeric"></div>
+    <div class="field"><label>Solo para nivel</label>
+      <select id="mpNivel">
+        <option value="">Todos los niveles</option>
+        <option value="bronce">🥉 Bronce o superior</option>
+        <option value="plata">🥈 Plata o superior</option>
+        <option value="oro">🥇 Solo Oro</option>
+      </select>
+    </div>
+    <div id="mpError" style="color:var(--red);font-size:.83rem;margin-bottom:12px;display:none"></div>
+    <button class="btn-primary btn-accent" onclick="guardarPremio()">Guardar premio</button>
+  </div>
+</div>
+
+<!-- MODAL EDITAR PUNTOS -->
+<div class="modal-overlay" id="modalEditarPts">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalEditarPts')">✕</button>
+    <div class="modal-title">Ajustar puntos</div>
+    <div class="modal-sub" id="editarPtsNombre"></div>
+    <div class="field"><label>Operación</label>
+      <select id="editarPtsOp">
+        <option value="add">+ Sumar puntos</option>
+        <option value="sub">- Restar puntos</option>
+        <option value="set">= Establecer valor</option>
+      </select>
+    </div>
+    <div class="field"><label>Cantidad</label><input type="number" id="editarPtsVal" placeholder="0" inputmode="numeric"></div>
+    <button class="btn-primary" onclick="guardarAjustePuntos()">Aplicar cambio</button>
+  </div>
+</div>
+
+<!-- MODAL SOLICITAR CANJE (cliente) -->
+<div class="modal-overlay" id="modalSolicitarCanje">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalSolicitarCanje')">✕</button>
+    <div class="modal-title">Solicitar canje</div>
+    <div class="modal-sub" id="solicitarCanjeNombre"></div>
+    <div class="alert alert-yellow" id="solicitarCanjeInfo"></div>
+    <button class="btn-primary btn-accent" onclick="confirmarSolicitudCanje()">Confirmar solicitud</button>
+    <button class="btn-outline" style="width:100%;margin-top:8px" onclick="closeModal('modalSolicitarCanje')">Cancelar</button>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+
+const firebaseConfig={
+  apiKey:"AIzaSyBXaBBiFQCu_SMSFZP8kp86EXHn7sOqk5I",
+  authDomain:"club-javicard.firebaseapp.com",
+  databaseURL:"https://club-javicard-default-rtdb.firebaseio.com",
+  projectId:"club-javicard",
+  storageBucket:"club-javicard.firebasestorage.app",
+  messagingSenderId:"759885217647",
+  appId:"1:759885217647:web:68e7c045d387d205ff729a"
+};
+const app=firebase.initializeApp(firebaseConfig);
+
+const auth=firebase.auth();
+
+// ============ ESTADO ============
+let currentUser=null,isAdmin=false;
+let clientes={},premios={},canjes={},movimientos={},config={};
+let clienteSelCargarData=null,clienteSelCanjearData=null;
+let editandoClienteId=null,editandoPremioId=null,premioParaCanjearId=null;
+let datosCliente=null;
+
+const ADMIN_EMAIL="javicard08@gmail.com";
+
+// ============ DEFAULTS CONFIG ============
+function cfg(k,def){return config[k]!==undefined?config[k]:def;}
+function pesosPorPunto(){return cfg('pesosPorPunto',475);}
+function diasSinComprar(){return cfg('diasSinComprar',15);}
+function ptsDescuento(){return cfg('ptsDescuento',20);}
+function maxCanjesMes(){return cfg('maxCanjesMes',2);}
+function nivelBronce(){return cfg('nivelBronce',100);}
+function nivelPlata(){return cfg('nivelPlata',200);}
+function nivelOro(){return cfg('nivelOro',300);}
+
+function getNivel(pts){
+  if(pts>=nivelOro()) return 'oro';
+  if(pts>=nivelPlata()) return 'plata';
+  if(pts>=nivelBronce()) return 'bronce';
+  return 'standard';
+}
+
+function nivelLabel(n){
+  if(n==='oro') return '🥇 Oro';
+  if(n==='plata') return '🥈 Plata';
+  if(n==='bronce') return '🥉 Bronce';
+  return 'Standard';
+}
+
+function nivelColor(n){
+  if(n==='oro') return 'badge-gold';
+  if(n==='plata') return 'badge-silver';
+  if(n==='bronce') return 'badge-bronze';
+  return 'badge-gray';
+}
+
+// ============ UTILS ============
+function mesActual(){const d=new Date();return`${d.getFullYear()}-${d.getMonth()}`;}
+function fechaHoy(){return new Date().toLocaleDateString('es-AR');}
+function initials(n){return n?n.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase():'?';}
+function diasDesde(ts){return Math.floor((Date.now()-ts)/(1000*60*60*24));}
+
+window.showToast=(msg,type='')=>{
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='show '+type;
+  setTimeout(()=>{t.className='';},3200);
+};
+window.openModal=id=>document.getElementById(id).classList.add('active');
+window.closeModal=id=>document.getElementById(id).classList.remove('active');
+window.showRegister=()=>{
+  document.querySelector('.login-card').style.display='none';
+  document.querySelector('.login-switch').style.display='none';
+  document.getElementById('registerCard').style.display='block';
+};
+window.hideRegister=()=>{
+  document.querySelector('.login-card').style.display='block';
+  document.querySelector('.login-switch').style.display='block';
+  document.getElementById('registerCard').style.display='none';
+};
+
+// ============ AUTH ============
+window.doLogin=async()=>{
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginError');
+  err.style.display='none';
+  try{await firebase.auth().signInWithEmailAndPassword(email,pass);}
+  catch(e){err.textContent='Email o contraseña incorrectos';err.style.display='block';}
+};
+
+window.doRegister=async()=>{
+  const nombre=document.getElementById('regNombre').value.trim();
+  const dni=document.getElementById('regDni').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const tel=document.getElementById('regTel').value.trim();
+  const bday=document.getElementById('regBday').value;
+  const err=document.getElementById('regError');
+  err.style.display='none';
+  if(!nombre||!dni||!email||!pass){err.textContent='Completá todos los campos';err.style.display='block';return;}
+  if(pass.length<6){err.textContent='Contraseña mínimo 6 caracteres';err.style.display='block';return;}
+  try{
+    const cred=await firebase.auth().createUserWithEmailAndPassword(email,pass);
+    await set(ref(db,'clientes/'+cred.user.uid),{nombre,dni,email,puntos:0,activo:true,tel,bday,canjesMes:0,mesCanjes:mesActual(),fechaAlta:Date.now(),ultimaCompra:Date.now()});
+    showToast('¡Cuenta creada!','success');hideRegister();
+  }catch(e){
+    err.textContent=e.code==='auth/email-already-in-use'?'Email ya registrado':'Error al crear cuenta';
+    err.style.display='block';
+  }
+};
+
+window.doLogout=async()=>{await firebase.auth().signOut();};
+
+firebase.auth().onAuthStateChanged(async user=>{
+  if(user){
+    currentUser=user;isAdmin=user.email===ADMIN_EMAIL;
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    document.getElementById('topUserName').textContent=isAdmin?'⚙️ Admin':user.email.split('@')[0];
+    if(isAdmin){
+      document.getElementById('navAdmin').style.display='flex';
+      document.getElementById('navCliente').style.display='none';
+      cargarDatos();
+      navTo('puntos',document.querySelector('#navAdmin .nav-item'));
+    }else{
+      document.getElementById('navAdmin').style.display='none';
+      document.getElementById('navCliente').style.display='flex';
+      cargarDatosCliente();
+      navClienteTo('cliente-inicio',document.querySelector('#navCliente .nav-item'));
+    }
+  }else{
+    currentUser=null;
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('app').style.display='none';
+  }
+});
+
+// ============ NAV ============
+window.navTo=(screen,btn)=>{
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+  document.querySelectorAll('#navAdmin .nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(screen==='puntos'){
+// ============ SOLICITUD PUNTOS (CLIENTE) ============
+window.enviarSolicitudPuntos=async()=>{
+  const ticket=document.getElementById('solTicket').value.trim().toUpperCase();
+  if(!ticket){showToast('Ingresá el número de ticket','error');return;}
+  
+  const snap=await firebase.database().ref('solicitudesPuntos').once('value');
+  const todas=snap.val()||{};
+  
+  // Ticket ya usado
+  const yaUsado=Object.values(todas).some(s=>s.ticket===ticket&&s.estado!=='rechazado');
+  if(yaUsado){showToast('❌ Este ticket ya fue registrado','error');return;}
+  
+  // Máx 2 pendientes
+  const pendientes=Object.values(todas).filter(s=>s.clienteId===currentUser.uid&&s.estado==='pendiente');
+  if(pendientes.length>=2){showToast('Tenés 2 solicitudes pendientes. Esperá que se procesen antes de enviar otra.','error');return;}
+  
+  await firebase.database().ref('solicitudesPuntos').push({
+    clienteId:currentUser.uid,
+    clienteNombre:datosCliente.nombre,
+    clienteEmail:currentUser.email,
+    ticket,
+    estado:'pendiente',
+    fecha:Date.now(),
+    fechaStr:fechaHoy(),
+    motivo:''
+  });
+  document.getElementById('solTicket').value='';
+  showToast('✅ Solicitud enviada','success');
+  renderMisSolicitudesPuntos();
+};
+
+function renderMisSolicitudesPuntos(){
+  firebase.database().ref('solicitudesPuntos').once('value').then(snap=>{
+    const todas=snap.val()||{};
+    const mis=Object.entries(todas).filter(([,s])=>s.clienteId===currentUser.uid).sort((a,b)=>b[1].fecha-a[1].fecha);
+    const el=document.getElementById('misSolicitudesPuntos');
+    
+    // Stats row
+    const aprobadas=mis.filter(([,s])=>s.estado==='aprobado').length;
+    const pendientes=mis.filter(([,s])=>s.estado==='pendiente').length;
+    const rechazadas=mis.filter(([,s])=>s.estado==='rechazado').length;
+    const statsHtml=mis.length?`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:#f0fdf4;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#16a34a">${aprobadas}</div><div style="font-size:.7rem;color:var(--subtext)">Aprobadas</div></div>
+      <div style="background:#fefce8;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#a16207">${pendientes}</div><div style="font-size:.7rem;color:var(--subtext)">Pendientes</div></div>
+      <div style="background:#fee2e2;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#dc2626">${rechazadas}</div><div style="font-size:.7rem;color:var(--subtext)">Rechazadas</div></div>
+    </div>`:'';
+
+    if(!mis.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Sin solicitudes</div>';return;}
+    el.innerHTML=statsHtml+mis.map(([,s])=>{
+      const rechazado=s.estado==='rechazado';
+      const aprobado=s.estado==='aprobado';
+      return`<div class="canje-item">
+        <div class="canje-header">
+          <div style="flex:1">
+            <div class="canje-name">Ticket #${s.ticket}</div>
+            <div class="canje-meta">${s.fechaStr}${s.monto?' · $'+s.monto.toLocaleString('es-AR'):''}</div>
+            ${aprobado?`<div style="font-size:.8rem;color:#16a34a;margin-top:3px;font-weight:600">+${s.puntosAcreditados} puntos acreditados</div>`:''}
+            ${rechazado&&s.motivo?`<div style="font-size:.8rem;color:#dc2626;margin-top:4px;background:#fee2e2;padding:6px 10px;border-radius:8px">⚠️ ${s.motivo}</div>`:''}
+            ${rechazado&&!s.motivo?`<div style="font-size:.8rem;color:#dc2626;margin-top:3px">No autorizado</div>`:''}
+          </div>
+          <span class="badge ${aprobado?'badge-green':s.estado==='pendiente'?'badge-yellow':'badge-red'}" style="flex-shrink:0">
+            ${aprobado?'✅ OK':s.estado==='pendiente'?'⏳ Pendiente':'✕ No autorizado'}
+          </span>
+        </div>
+      </div>`;}).join('');
+  });
+}
+
+// ============ SOLICITUDES PUNTOS (ADMIN) ============
+function renderSolicitudesPuntos(){
+  firebase.database().ref('solicitudesPuntos').once('value').then(snap=>{
+    const todas=snap.val()||{};
+    const lista=Object.entries(todas).sort((a,b)=>b[1].fecha-a[1].fecha);
+    const el=document.getElementById('listaSolicitudesPuntos');
+    if(!el)return;
+
+    // Stats totales y por hora/día
+    const hoy=fechaHoy();
+    const ahora=Date.now();
+    const hace1h=ahora-3600000;
+    const pendTotales=lista.filter(([,s])=>s.estado==='pendiente').length;
+    const hoy_=lista.filter(([,s])=>s.fechaStr===hoy).length;
+    const ultima1h=lista.filter(([,s])=>s.fecha>hace1h).length;
+    const aprobHoy=lista.filter(([,s])=>s.fechaStr===hoy&&s.estado==='aprobado').length;
+    const rechHoy=lista.filter(([,s])=>s.fechaStr===hoy&&s.estado==='rechazado').length;
+
+    const statsHtml=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:#fefce8;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;color:#a16207">${pendTotales}</div><div style="font-size:.68rem;color:var(--subtext)">Pendientes</div></div>
+      <div style="background:#eff6ff;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;color:var(--blue)">${ultima1h}</div><div style="font-size:.68rem;color:var(--subtext)">Última hora</div></div>
+      <div style="background:var(--light);border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;color:var(--navy)">${hoy_}</div><div style="font-size:.68rem;color:var(--subtext)">Hoy total</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:#f0fdf4;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#16a34a">✅ ${aprobHoy}</div><div style="font-size:.68rem;color:var(--subtext)">Aprobadas hoy</div></div>
+      <div style="background:#fee2e2;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#dc2626">✕ ${rechHoy}</div><div style="font-size:.68rem;color:var(--subtext)">Rechazadas hoy</div></div>
+    </div>`;
+
+    const pendientes=lista.filter(([,s])=>s.estado==='pendiente');
+    if(!pendientes.length){el.innerHTML=statsHtml+'<div class="empty"><div class="empty-icon">📋</div>Sin solicitudes pendientes</div>';return;}
+
+    const motivosFijos=[
+      'Ticket no encontrado en el sistema',
+      'El monto no coincide con el ticket',
+      'Ticket ya fue cargado por otro cliente',
+      'Ticket fuera del período válido',
+    ];
+
+    el.innerHTML=statsHtml+pendientes.map(([id,s])=>`
+      <div class="canje-item">
+        <div class="canje-header">
+          <div>
+            <div class="canje-name">${s.clienteNombre}</div>
+            <div class="canje-meta" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              <span>Ticket <strong>#${s.ticket}</strong></span>
+              <span>·</span><span>${s.fechaStr}</span>
+              <span>·</span><span style="font-size:.72rem;color:var(--subtext)">${new Date(s.fecha).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>
+            </div>
+          </div>
+          <span class="badge badge-yellow">Pendiente</span>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+            <input type="number" placeholder="Monto $" id="monto_${id}" style="width:110px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem" inputmode="numeric">
+            <button class="btn-primary btn-sm" onclick="aprobarSolicitudPuntos('${id}')">✅ Aprobar</button>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <select id="motivoRechazo_${id}" style="flex:1;min-width:180px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.8rem;font-family:'DM Sans',sans-serif">
+              ${motivosFijos.map(m=>`<option value="${m}">${m}</option>`).join('')}
+              <option value="">Otro (escribir abajo)</option>
+            </select>
+            <button class="btn-outline btn-sm" style="color:var(--red);flex-shrink:0" onclick="rechazarSolicitudPuntos('${id}')">✕ Rechazar</button>
+          </div>
+          <input type="text" id="motivoCustom_${id}" placeholder="Motivo personalizado (opcional)" style="width:100%;margin-top:6px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.8rem;display:none">
+        </div>
+      </div>`).join('');
+
+    // Show custom input when "Otro" selected
+    pendientes.forEach(([id])=>{
+      const sel=document.getElementById('motivoRechazo_'+id);
+      if(sel) sel.onchange=()=>{
+        const custom=document.getElementById('motivoCustom_'+id);
+        if(custom) custom.style.display=sel.value===''?'block':'none';
+      };
+    });
+  });
+}
+
+window.aprobarSolicitudPuntos=async(id)=>{
+  const montoEl=document.getElementById('monto_'+id);
+  const monto=parseInt(montoEl?.value)||0;
+  if(monto<=0){showToast('Ingresá el monto de la compra','error');return;}
+  const snap=await firebase.database().ref('solicitudesPuntos/'+id).once('value');
+  const s=snap.val();
+  const pts=Math.floor(monto/pesosPorPunto());
+  const clienteSnap=await firebase.database().ref('clientes/'+s.clienteId).once('value');
+  const c=clienteSnap.val()||{};
+  const nuevoPts=(c.puntos||0)+pts;
+  await firebase.database().ref('clientes/'+s.clienteId).update({puntos:nuevoPts,ultimaCompra:Date.now()});
+  await firebase.database().ref('solicitudesPuntos/'+id).update({estado:'aprobado',monto,puntosAcreditados:pts,fechaAprobado:fechaHoy()});
+  await firebase.database().ref('movimientos').push({clienteId:s.clienteId,clienteNombre:s.clienteNombre,tipo:'venta',monto,ticket:s.ticket,puntosGanados:pts,fecha:Date.now(),fechaStr:fechaHoy(),viaApp:true});
+  showToast(`✅ +${pts} pts acreditados a ${s.clienteNombre}`,'success');
+  renderSolicitudesPuntos();
+};
+
+window.rechazarConMotivo=async(id,motivo)=>{
+  const motivoFinal=motivo||'Ticket no verificado en nuestro sistema';
+  await firebase.database().ref('solicitudesPuntos/'+id).update({estado:'rechazado',fechaRechazo:fechaHoy(),motivo:motivoFinal});
+  showToast('Solicitud rechazada','');
+  renderSolicitudesPuntos();
+};
+
+window.rechazarSolicitudPuntos=async(id)=>{
+  const sel=document.getElementById('motivoRechazo_'+id);
+  const customEl=document.getElementById('motivoCustom_'+id);
+  let motivo=sel?sel.value:'';
+  if(!motivo&&customEl&&customEl.value.trim()) motivo=customEl.value.trim();
+  const motivoFinal=motivo||'Ticket no verificado en nuestro sistema';
+  await firebase.database().ref('solicitudesPuntos/'+id).update({estado:'rechazado',fechaRechazo:fechaHoy(),motivo:motivoFinal});
+  showToast('Solicitud rechazada · Cliente notificado','');
+  renderSolicitudesPuntos();
+};
+
+// ============ GIFTCARDS ============
+function gcCodigo(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const seg=()=>Array.from({length:3},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  return`GC-${seg()}-${seg()}`;
+}
+
+window.crearGiftcard=async()=>{
+  const dest=document.getElementById('gcDestinatario').value.trim();
+  const valor=parseInt(document.getElementById('gcValor').value)||0;
+  const mensaje=document.getElementById('gcMensaje').value.trim();
+  const venc=document.getElementById('gcVencimiento').value;
+  const tel=document.getElementById('gcTel').value.trim();
+  const err=document.getElementById('gcError');
+  if(!dest||valor<=0){err.textContent='Completá destinatario y valor';err.style.display='block';return;}
+  const codigo=gcCodigo();
+  await firebase.database().ref('giftcards').push({codigo,destinatario:dest,valor,mensaje,vencimiento:venc,tel,estado:'activa',fecha:Date.now(),fechaStr:fechaHoy()});
+  closeModal('modalGiftcard');
+  ['gcDestinatario','gcValor','gcMensaje','gcVencimiento','gcTel'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('gcCodigoDisplay').textContent=codigo;
+  document.getElementById('gcValorDisplay').textContent='$'+valor.toLocaleString('es-AR');
+  const waBtn=document.getElementById('gcWaBtn');
+  if(tel){
+    const msg=encodeURIComponent(`🎁 Tu GiftCard Club Javicard\nCódigo: ${codigo}\nValor: $${valor.toLocaleString('es-AR')}${mensaje?' · '+mensaje:''}`);
+    waBtn.innerHTML=`<a href="https://wa.me/54${tel}?text=${msg}" target="_blank" class="btn-primary btn-accent" style="display:inline-block;text-decoration:none;padding:12px 20px;border-radius:10px">📱 Enviar por WhatsApp</a>`;
+  }else waBtn.innerHTML='';
+  openModal('modalGiftcardCreada');
+};
+
+function renderGiftcards(){
+  firebase.database().ref('giftcards').once('value').then(snap=>{
+    const todas=snap.val()||{};
+    const el=document.getElementById('listaGiftcards');
+    if(!el)return;
+    const lista=Object.entries(todas).sort((a,b)=>b[1].fecha-a[1].fecha);
+    if(!lista.length){el.innerHTML='<div class="empty"><div class="empty-icon">🎁</div>Sin GiftCards</div>';return;}
+    el.innerHTML=lista.map(([id,g])=>`
+      <div class="list-item">
+        <div class="avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--navy);font-size:.7rem">GC</div>
+        <div class="list-info">
+          <div class="list-name">${g.codigo}</div>
+          <div class="list-sub">${g.destinatario} · ${g.fechaStr}${g.mensaje?' · '+g.mensaje:''}</div>
+        </div>
+        <div class="list-right">
+          <div class="pts-num" style="color:var(--accent)">$${(g.valor||0).toLocaleString('es-AR')}</div>
+          <div style="margin-top:3px"><span class="badge ${g.estado==='activa'?'badge-green':'badge-gray'}">${g.estado}</span></div>
+        </div>
+      </div>`).join('');
+  });
+}
+
+function renderResumenSolicitudes(){
+  const el=document.getElementById('statsResumenSolicitudes');
+  if(!el)return;
+  firebase.database().ref('solicitudesPuntos').once('value').then(snap=>{
+    const todas=snap.val()||{};
+    const hoy=fechaHoy();
+    const ahora=Date.now();
+    const hace1h=ahora-3600000;
+    const hoyList=Object.entries(todas).filter(([,s])=>s.fechaStr===hoy);
+    const ultima1h=Object.entries(todas).filter(([,s])=>s.fecha>hace1h);
+    if(!hoyList.length){el.innerHTML='<div class="empty" style="padding:16px"><div class="empty-icon" style="font-size:1.5rem">📋</div>Sin solicitudes hoy</div>';return;}
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <div style="background:#eff6ff;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:var(--blue)">${ultima1h.length}</div><div style="font-size:.68rem;color:var(--subtext)">Última hora</div></div>
+      <div style="background:#fefce8;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#a16207">${hoyList.filter(([,s])=>s.estado==='pendiente').length}</div><div style="font-size:.68rem;color:var(--subtext)">Pendientes</div></div>
+      <div style="background:var(--light);border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:var(--navy)">${hoyList.length}</div><div style="font-size:.68rem;color:var(--subtext)">Total hoy</div></div>
+    </div>`+hoyList.slice(0,5).map(([,s])=>`
+      <div class="list-item" style="padding:8px 0">
+        <div class="avatar" style="width:32px;height:32px;font-size:.75rem">${s.clienteNombre?s.clienteNombre[0].toUpperCase():'?'}</div>
+        <div class="list-info">
+          <div class="list-name" style="font-size:.85rem">${s.clienteNombre} · #${s.ticket}</div>
+          <div class="list-sub">${new Date(s.fecha).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+        <span class="badge ${s.estado==='aprobado'?'badge-green':s.estado==='pendiente'?'badge-yellow':'badge-red'}" style="font-size:.68rem">${s.estado==='aprobado'?'✅':s.estado==='pendiente'?'⏳':'✕'}</span>
+      </div>`).join('');
+  });
+}
+
+document.getElementById('fechaHoyLabel').textContent=fechaHoy();renderCargasHoy();renderSolicitudes();}
+  if(screen==='clientes') renderClientes();
+  if(screen==='premios') renderPremiosAdmin();
+  if(screen==='stats') renderStats();
+  if(screen==='giftcards'){renderGiftcards();}
+  if(screen==='config') cargarConfig();
+};
+
+window.navClienteTo=(screen,btn)=>{
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+  document.querySelectorAll('#navCliente .nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(screen==='cliente-inicio') actualizarHeroCliente();
+  if(screen==='cliente-premios') renderPremiosCliente();
+  if(screen==='cliente-solicitar') renderMisSolicitudesPuntos();
+  if(screen==='cliente-ranking') renderRanking();
+  if(screen==='cliente-canjes') renderMisCanjes();
+};
+
+window.switchTab=(tabId,btn)=>{
+  document.getElementById('tab-cargar').style.display='none';
+  document.getElementById('tab-canjear').style.display='none';
+  document.getElementById(tabId).style.display='block';
+  document.querySelectorAll('.tabs .tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(tabId==='tab-canjear'){renderSolicitudes();popularSelectPremios();renderSolicitudesPuntos();}
+};
+
+// ============ DATOS ADMIN ============
+function cargarDatos(){
+  firebase.database().ref('clientes').on('value',snap=>{clientes=snap.val()||{};});
+  firebase.database().ref('premios').on('value',snap=>{premios=snap.val()||{};});
+  firebase.database().ref('canjes').on('value',snap=>{canjes=snap.val()||{};});
+  firebase.database().ref('movimientos').on('value',snap=>{movimientos=snap.val()||{};});
+  firebase.database().ref('config').on('value',snap=>{config=snap.val()||{};cargarConfig();});
+}
+
+// ============ CONFIG ============
+function cargarConfig(){
+  const f=v=>v!==undefined?v:'';
+  setVal('cfgPesosPorPunto',f(config.pesosPorPunto));
+  setVal('cfgDiasSinComprar',f(config.diasSinComprar));
+  setVal('cfgPtsDescuento',f(config.ptsDescuento));
+  setVal('cfgMaxCanjes',f(config.maxCanjesMes));
+  setVal('cfgBronce',f(config.nivelBronce));
+  setVal('cfgPlata',f(config.nivelPlata));
+  setVal('cfgOro',f(config.nivelOro));
+}
+function setVal(id,v){const el=document.getElementById(id);if(el&&v!=='')el.value=v;}
+
+window.guardarConfig=async()=>{
+  const data={
+    pesosPorPunto:parseInt(document.getElementById('cfgPesosPorPunto').value)||475,
+    diasSinComprar:parseInt(document.getElementById('cfgDiasSinComprar').value)||15,
+    ptsDescuento:parseInt(document.getElementById('cfgPtsDescuento').value)||20,
+    maxCanjesMes:parseInt(document.getElementById('cfgMaxCanjes').value)||2,
+    nivelBronce:parseInt(document.getElementById('cfgBronce').value)||100,
+    nivelPlata:parseInt(document.getElementById('cfgPlata').value)||200,
+    nivelOro:parseInt(document.getElementById('cfgOro').value)||300,
+  };
+  await firebase.database().ref('config').set(data);
+  showToast('Configuración guardada ✅','success');
+};
+
+// ============ BUSCAR CLIENTE ============
+window.buscarCliente=(q,ctx)=>{
+  const resId=ctx==='cargar'?'resultsCargar':'resultsCanjear';
+  const resEl=document.getElementById(resId);
+  if(!q||q.length<2){resEl.style.display='none';return;}
+  const resultados=Object.entries(clientes).filter(([,c])=>
+    c.nombre?.toLowerCase().includes(q.toLowerCase())||
+    c.email?.toLowerCase().includes(q.toLowerCase())||
+    c.dni?.includes(q)
+  ).slice(0,5);
+  if(!resultados.length){resEl.style.display='none';return;}
+  resEl.innerHTML=resultados.map(([id,c])=>`
+    <div class="search-result-item" onclick="seleccionarCliente('${id}','${ctx}')">
+      <div class="avatar" style="width:32px;height:32px;font-size:.8rem">${initials(c.nombre)}</div>
+      <div><div style="font-weight:600;font-size:.88rem">${c.nombre}</div>
+      <div style="font-size:.75rem;color:var(--subtext)">${c.email} · ${c.puntos||0} pts · <span class="badge ${nivelColor(getNivel(c.puntos||0))}">${nivelLabel(getNivel(c.puntos||0))}</span></div></div>
+    </div>`).join('');
+  resEl.style.display='block';
+};
+
+window.seleccionarCliente=(id,ctx)=>{
+  const c=clientes[id];if(!c)return;
+  if(ctx==='cargar'){
+    clienteSelCargarData={id,...c};
+    document.getElementById('avatarCargar').textContent=initials(c.nombre);
+    document.getElementById('nombreCargar').textContent=c.nombre;
+    document.getElementById('ptsCargar').textContent=`${c.puntos||0} pts · ${nivelLabel(getNivel(c.puntos||0))}`;
+    document.getElementById('clienteSelCargar').style.display='block';
+    document.getElementById('resultsCargar').style.display='none';
+    document.getElementById('buscarClienteCargar').value='';
+  }else{
+    clienteSelCanjearData={id,...c};
+    document.getElementById('avatarCanjear').textContent=initials(c.nombre);
+    document.getElementById('nombreCanjear').textContent=c.nombre;
+    document.getElementById('ptsCanjear').textContent=`${c.puntos||0} pts · ${nivelLabel(getNivel(c.puntos||0))}`;
+    document.getElementById('clienteSelCanjear').style.display='block';
+    document.getElementById('resultsCanjear').style.display='none';
+    document.getElementById('buscarClienteCanjear').value='';
+    popularSelectPremios();
+  }
+};
+
+window.limpiarClienteCargar=()=>{clienteSelCargarData=null;document.getElementById('clienteSelCargar').style.display='none';document.getElementById('montoVenta').value='';document.getElementById('numTicket').value='';document.getElementById('ptsPreview').style.display='none';};
+window.limpiarClienteCanjear=()=>{clienteSelCanjearData=null;document.getElementById('clienteSelCanjear').style.display='none';};
+
+// ============ CARGAR PUNTOS ============
+window.calcularPuntos=()=>{
+  const monto=parseInt(document.getElementById('montoVenta').value)||0;
+  const pts=Math.floor(monto/pesosPorPunto());
+  const prev=document.getElementById('ptsPreview');
+  if(monto>0){prev.textContent=`⭐ Ganará ${pts} punto${pts!==1?'s':''} (1 pto cada $${pesosPorPunto().toLocaleString('es-AR')})`;prev.style.display='block';}
+  else prev.style.display='none';
+};
+
+window.registrarVenta=async()=>{
+  if(!clienteSelCargarData)return;
+  const ticket=document.getElementById('numTicket').value.trim();
+  const monto=parseInt(document.getElementById('montoVenta').value)||0;
+  if(!ticket){showToast('Ingresá el N° de ticket','error');return;}
+  if(monto<=0){showToast('Ingresá el monto','error');return;}
+  const pts=Math.floor(monto/pesosPorPunto());
+  const nuevoPts=(clienteSelCargarData.puntos||0)+pts;
+  await firebase.database().ref('clientes/'+clienteSelCargarData.id).update({puntos:nuevoPts,ultimaCompra:Date.now()});
+  await firebase.database().ref('movimientos').push({clienteId:clienteSelCargarData.id,clienteNombre:clienteSelCargarData.nombre,tipo:'venta',monto,ticket,puntosGanados:pts,fecha:Date.now(),fechaStr:fechaHoy()});
+  clienteSelCargarData.puntos=nuevoPts;
+  document.getElementById('ptsCargar').textContent=`${nuevoPts} pts`;
+  document.getElementById('montoVenta').value='';document.getElementById('numTicket').value='';
+  document.getElementById('ptsPreview').style.display='none';
+  showToast(`✅ +${pts} puntos · Total: ${nuevoPts} pts`,'success');
+  renderCargasHoy();
+};
+
+function renderCargasHoy(){
+  const hoy=fechaHoy();
+  const hoyMovs=Object.entries(movimientos).filter(([,m])=>m.fechaStr===hoy&&m.tipo==='venta').sort((a,b)=>b[1].fecha-a[1].fecha);
+  const el=document.getElementById('listaCargasHoy');
+  if(!hoyMovs.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Sin cargas hoy</div>';return;}
+  el.innerHTML=hoyMovs.map(([,m])=>`
+    <div class="list-item">
+      <div class="avatar" style="width:36px;height:36px;font-size:.8rem">${initials(m.clienteNombre)}</div>
+      <div class="list-info"><div class="list-name">${m.clienteNombre}</div><div class="list-sub">Ticket #${m.ticket||'—'} · $${(m.monto||0).toLocaleString('es-AR')}</div></div>
+      <div class="list-right"><div class="pts-num" style="color:var(--green)">+${m.puntosGanados} pts</div></div>
+    </div>`).join('');
+}
+
+// ============ CANJEAR ADMIN ============
+function popularSelectPremios(){
+  const sel=document.getElementById('selectPremio');
+  const clientePts=clienteSelCanjearData?.puntos||0;
+  const nivelCliente=getNivel(clientePts);
+  sel.innerHTML='<option value="">— Seleccioná un premio —</option>';
+  const nivelOrder=['standard','bronce','plata','oro'];
+  Object.entries(premios).filter(([,p])=>p.activo).forEach(([id,p])=>{
+    const puedeNivel=!p.nivelMinimo||nivelOrder.indexOf(nivelCliente)>=nivelOrder.indexOf(p.nivelMinimo);
+    const puedeOp=clientePts>=p.puntos&&puedeNivel;
+    sel.innerHTML+=`<option value="${id}" ${!puedeOp?'disabled':''}>${p.emoji||'🎁'} ${p.nombre} (${p.puntos} pts)${!puedeOp?' ✗':''}</option>`;
+  });
+}
+
+window.onSelectPremio=()=>{
+  const id=document.getElementById('selectPremio').value;
+  const info=document.getElementById('premioInfo');
+  if(!id){info.style.display='none';return;}
+  const p=premios[id];
+  document.getElementById('premioInfoTxt').textContent=`🎁 "${p.nombre}" · ${p.puntos} pts · Quedarán ${(clienteSelCanjearData.puntos||0)-p.puntos} pts`;
+  info.style.display='block';
+};
+
+window.ejecutarCanje=async()=>{
+  if(!clienteSelCanjearData)return;
+  const premioId=document.getElementById('selectPremio').value;
+  if(!premioId){showToast('Seleccioná un premio','error');return;}
+  const p=premios[premioId];const c=clienteSelCanjearData;
+  if((c.puntos||0)<p.puntos){showToast('Puntos insuficientes','error');return;}
+  const mesAct=mesActual();
+  let canjesMes=c.canjesMes||0;
+  if(c.mesCanjes!==mesAct) canjesMes=0;
+  if(canjesMes>=maxCanjesMes()){showToast(`Límite de ${maxCanjesMes()} canjes/mes alcanzado`,'error');return;}
+  const nuevoPts=c.puntos-p.puntos;
+  await firebase.database().ref('clientes/'+c.id).update({puntos:nuevoPts,canjesMes:canjesMes+1,mesCanjes:mesAct});
+  await firebase.database().ref('canjes').push({clienteId:c.id,clienteNombre:c.nombre,premioId,premioNombre:p.nombre,puntosUsados:p.puntos,estado:'aprobado',fecha:Date.now(),fechaStr:fechaHoy(),aprobadoPor:'admin'});
+  await firebase.database().ref('movimientos').push({clienteId:c.id,clienteNombre:c.nombre,tipo:'canje',premioNombre:p.nombre,puntosUsados:p.puntos,fecha:Date.now(),fechaStr:fechaHoy()});
+  if(p.stock!==undefined&&p.stock!==null&&p.stock!=='') await firebase.database().ref('premios/'+premioId).update({stock:Math.max(0,(p.stock||0)-1)});
+  showToast(`✅ Canje OK · Quedan ${nuevoPts} pts`,'success');
+  clienteSelCanjearData.puntos=nuevoPts;
+  document.getElementById('ptsCanjear').textContent=`${nuevoPts} pts`;
+  document.getElementById('selectPremio').value='';
+  document.getElementById('premioInfo').style.display='none';
+};
+
+// ============ SOLICITUDES ============
+function renderSolicitudes(){
+  const pendientes=Object.entries(canjes).filter(([,c])=>c.estado==='pendiente');
+  const el=document.getElementById('listaSolicitudes');
+  if(!pendientes.length){el.innerHTML='<div class="empty"><div class="empty-icon">✅</div>Sin solicitudes</div>';return;}
+  el.innerHTML=pendientes.map(([id,c])=>`
+    <div class="canje-item">
+      <div class="canje-header">
+        <div>
+          <div class="canje-name">${c.clienteNombre}</div>
+          <div class="canje-meta">${c.premioNombre} · ${c.puntosUsados} pts · ${c.fechaStr}</div>
+          ${c.codigo?`<div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--navy);font-size:.95rem;margin-top:4px;letter-spacing:1px">${c.codigo}</div>`:''}
+        </div>
+        <span class="badge badge-yellow">Pendiente</span>
+      </div>
+      <div class="canje-actions">
+        <button class="btn-primary btn-sm" onclick="aprobarSolicitud('${id}')">✅ Entregar</button>
+        <button class="btn-outline btn-sm" style="color:var(--red)" onclick="rechazarSolicitud('${id}')">✕ Rechazar</button>
+      </div>
+    </div>`).join('');
+}
+
+window.aprobarSolicitud=async id=>{
+  await firebase.database().ref('canjes/'+id).update({estado:'aprobado',fechaAprobado:fechaHoy()});
+  showToast('✅ Premio entregado','success');
+  renderSolicitudes();
+};
+
+window.buscarCodigo=async()=>{
+  const cod=document.getElementById('inputBuscarCodigo').value.trim().toUpperCase();
+  if(!cod){showToast('Ingresá un código','error');return;}
+  const snap=await firebase.database().ref('canjes').once('value');
+  const todos=snap.val()||{};
+  const encontrado=Object.entries(todos).find(([,c])=>c.codigo===cod);
+  const el=document.getElementById('resultBuscarCodigo');
+  if(!encontrado){el.innerHTML='<div class="alert alert-red">❌ Código no encontrado</div>';return;}
+  const [id,c]=encontrado;
+  const estadoColor=c.estado==='pendiente'?'badge-yellow':c.estado==='aprobado'?'badge-green':'badge-red';
+  el.innerHTML=`<div class="selected-client" style="flex-direction:column;align-items:flex-start">
+    <div style="font-weight:700;font-size:1rem">${c.codigo}</div>
+    <div style="font-size:.85rem;margin-top:4px">${c.clienteNombre} · ${c.premioNombre}</div>
+    <div style="font-size:.8rem;color:var(--subtext)">${c.puntosUsados} pts · ${c.fechaStr}</div>
+    <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+      <span class="badge ${estadoColor}">${c.estado==='pendiente'?'⏳ Pendiente':c.estado==='aprobado'?'✅ Entregado':'✕ Rechazado'}</span>
+      ${c.estado==='pendiente'?`<button class="btn-primary btn-sm" onclick="aprobarSolicitud('${id}');document.getElementById('resultBuscarCodigo').innerHTML='<div class=alert alert-green>✅ Premio entregado</div>'">Entregar ahora</button>`:''}
+    </div>
+  </div>`;
+};
+
+window.rechazarSolicitud=async id=>{
+  const c=canjes[id];
+  const cliente=clientes[c.clienteId];
+  if(cliente) await firebase.database().ref('clientes/'+c.clienteId).update({puntos:(cliente.puntos||0)+c.puntosUsados});
+  await firebase.database().ref('canjes/'+id).update({estado:'rechazado'});
+  showToast('Canje rechazado · Puntos devueltos','');
+};
+
+// ============ CLIENTES ADMIN ============
+window.renderClientes=()=>{
+  const q=document.getElementById('buscarClienteLista')?.value?.toLowerCase()||'';
+  const filtrados=Object.entries(clientes).filter(([,c])=>!q||c.nombre?.toLowerCase().includes(q)||c.email?.toLowerCase().includes(q)||c.dni?.includes(q));
+  const el=document.getElementById('listaClientes');
+  if(!filtrados.length){el.innerHTML='<div class="empty"><div class="empty-icon">👤</div>Sin clientes</div>';return;}
+  el.innerHTML=filtrados.sort((a,b)=>(b[1].puntos||0)-(a[1].puntos||0)).map(([id,c])=>{
+    const nivel=getNivel(c.puntos||0);
+    return`<div class="list-item">
+      <div class="avatar">${initials(c.nombre)}</div>
+      <div class="list-info">
+        <div class="list-name">${c.nombre}</div>
+        <div class="list-sub">DNI: ${c.dni||'—'} · ${c.tel||''}</div>
+        <div style="margin-top:3px"><span class="badge ${nivelColor(nivel)}">${nivelLabel(nivel)}</span></div>
+      </div>
+      <div class="list-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="pts-num">${c.puntos||0} pts</div>
+        <div style="display:flex;gap:4px">
+          <button class="btn-outline btn-sm" onclick="openEditarPts('${id}')">✏️</button>
+          <button class="btn-outline btn-sm" style="color:var(--red)" onclick="eliminarCliente('${id}')">🗑</button>
+        </div>
+      </div>
+    </div>`;}).join('');
+};
+
+window.openModalAgregarCliente=()=>{
+  editandoClienteId=null;
+  document.getElementById('modalClienteTitulo').textContent='Agregar cliente';
+  ['mcNombre','mcDni','mcEmail','mcPass','mcTel','mcBday'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mcPts').value='0';
+  document.getElementById('mcError').style.display='none';
+  openModal('modalCliente');
+};
+
+window.guardarCliente=async()=>{
+  const nombre=document.getElementById('mcNombre').value.trim();
+  const dni=document.getElementById('mcDni').value.trim();
+  const email=document.getElementById('mcEmail').value.trim();
+  const pass=document.getElementById('mcPass').value;
+  const tel=document.getElementById('mcTel').value.trim();
+  const bday=document.getElementById('mcBday').value;
+  const pts=parseInt(document.getElementById('mcPts').value)||0;
+  const err=document.getElementById('mcError');
+  err.style.display='none';
+  if(!nombre||!dni||!email){err.textContent='Completá nombre, DNI y email';err.style.display='block';return;}
+  if(!pass||pass.length<6){err.textContent='Contraseña mínimo 6 caracteres';err.style.display='block';return;}
+  try{
+    const cred=await firebase.auth().createUserWithEmailAndPassword(email,pass);
+    await set(ref(db,'clientes/'+cred.user.uid),{nombre,dni,email,puntos:pts,activo:true,tel,bday,canjesMes:0,mesCanjes:mesActual(),fechaAlta:Date.now(),ultimaCompra:Date.now()});
+    const adminPass=prompt('Reingresá tu contraseña de admin:');
+    if(adminPass) await firebase.auth().signInWithEmailAndPassword(ADMIN_EMAIL,adminPass);
+    closeModal('modalCliente');showToast('Cliente agregado ✅','success');
+  }catch(e){
+    err.textContent=e.code==='auth/email-already-in-use'?'Email ya registrado':'Error: '+e.message;
+    err.style.display='block';
+  }
+};
+
+window.openEditarPts=id=>{
+  editandoClienteId=id;
+  document.getElementById('editarPtsNombre').textContent=clientes[id]?.nombre+' · '+(clientes[id]?.puntos||0)+' pts actuales';
+  document.getElementById('editarPtsVal').value='';
+  openModal('modalEditarPts');
+};
+
+window.guardarAjustePuntos=async()=>{
+  const op=document.getElementById('editarPtsOp').value;
+  const val=parseInt(document.getElementById('editarPtsVal').value)||0;
+  const c=clientes[editandoClienteId];
+  let nuevoPts=c.puntos||0;
+  if(op==='add') nuevoPts+=val;
+  else if(op==='sub') nuevoPts=Math.max(0,nuevoPts-val);
+  else nuevoPts=val;
+  await firebase.database().ref('clientes/'+editandoClienteId).update({puntos:nuevoPts});
+  await firebase.database().ref('movimientos').push({clienteId:editandoClienteId,clienteNombre:c.nombre,tipo:'ajuste_manual',puntosGanados:nuevoPts-(c.puntos||0),fecha:Date.now(),fechaStr:fechaHoy()});
+  closeModal('modalEditarPts');showToast(`Puntos → ${nuevoPts}`,'success');
+};
+
+window.eliminarCliente=async id=>{
+  if(!confirm('¿Eliminar este cliente?'))return;
+  await firebase.database().ref('clientes/'+id).remove();showToast('Cliente eliminado','');
+};
+
+// ============ PREMIOS ADMIN ============
+window.renderPremiosAdmin=()=>{
+  const el=document.getElementById('listaPremiosAdmin');
+  const lista=Object.entries(premios);
+  if(!lista.length){el.innerHTML='<div class="empty"><div class="empty-icon">🎁</div>Sin premios. ¡Creá el primero!</div>';return;}
+  el.innerHTML=lista.map(([id,p])=>`
+    <div class="premio-card">
+      <div class="premio-img">${p.imgUrl?`<img src="${p.imgUrl}" alt="${p.nombre}" onerror="this.style.display='none'">`:''}<span style="${p.imgUrl?'display:none':''}">${p.emoji||'🎁'}</span></div>
+      <div class="premio-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="premio-name">${p.nombre}</div>
+            <div class="premio-pts">${p.puntos} puntos · ${p.descripcion||''}</div>
+            <div style="font-size:.75rem;color:var(--gray);margin-top:2px">${p.stock!==undefined&&p.stock!==''?`Stock: ${p.stock}`:'Sin límite'} ${p.nivelMinimo?'· Solo '+nivelLabel(p.nivelMinimo):''}</div>
+          </div>
+          <span class="badge ${p.activo?'badge-green':'badge-gray'}">${p.activo?'Activo':'Inactivo'}</span>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="btn-outline btn-sm" onclick="editarPremio('${id}')">✏️ Editar</button>
+          <button class="btn-outline btn-sm" onclick="togglePremio('${id}')">${p.activo?'⏸':'▶'}</button>
+          <button class="btn-outline btn-sm" style="color:var(--red)" onclick="eliminarPremio('${id}')">🗑</button>
+        </div>
+      </div>
+    </div>`).join('');
+};
+
+window.openModalAgregarPremio=()=>{
+  editandoPremioId=null;
+  document.getElementById('modalPremioTitulo').textContent='Nuevo premio';
+  ['mpNombre','mpImg','mpEmoji','mpDesc','mpPts','mpStock'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mpNivel').value='';
+  document.getElementById('mpError').style.display='none';
+  openModal('modalPremio');
+};
+
+window.editarPremio=id=>{
+  editandoPremioId=id;const p=premios[id];
+  document.getElementById('modalPremioTitulo').textContent='Editar premio';
+  document.getElementById('mpNombre').value=p.nombre||'';
+  document.getElementById('mpImg').value=p.imgUrl||'';
+  document.getElementById('mpEmoji').value=p.emoji||'';
+  document.getElementById('mpDesc').value=p.descripcion||'';
+  document.getElementById('mpPts').value=p.puntos||'';
+  document.getElementById('mpStock').value=p.stock!==undefined?p.stock:'';
+  document.getElementById('mpNivel').value=p.nivelMinimo||'';
+  openModal('modalPremio');
+};
+
+window.guardarPremio=async()=>{
+  const nombre=document.getElementById('mpNombre').value.trim();
+  const imgUrl=document.getElementById('mpImg').value.trim();
+  const emoji=document.getElementById('mpEmoji').value.trim()||'🎁';
+  const descripcion=document.getElementById('mpDesc').value.trim();
+  const puntos=parseInt(document.getElementById('mpPts').value)||0;
+  const stockVal=document.getElementById('mpStock').value.trim();
+  const stock=stockVal!==''?parseInt(stockVal):null;
+  const nivelMinimo=document.getElementById('mpNivel').value;
+  const err=document.getElementById('mpError');
+  if(!nombre||puntos<=0){err.textContent='Completá nombre y puntos';err.style.display='block';return;}
+  const data={nombre,imgUrl,emoji,descripcion,puntos,activo:true};
+  if(stock!==null) data.stock=stock;
+  if(nivelMinimo) data.nivelMinimo=nivelMinimo;
+  if(editandoPremioId) await firebase.database().ref('premios/'+editandoPremioId).update(data);
+  else await firebase.database().ref('premios').push(data);
+  closeModal('modalPremio');showToast('Premio guardado ✅','success');
+};
+
+window.togglePremio=async id=>{const p=premios[id];await firebase.database().ref('premios/'+id).update({activo:!p.activo});};
+window.eliminarPremio=async id=>{if(!confirm('¿Eliminar este premio?'))return;await firebase.database().ref('premios/'+id).remove();};
+
+// ============ ESTADÍSTICAS ============
+function renderStats(){
+  const totalClientes=Object.keys(clientes).length;
+  const totalPuntos=Object.values(movimientos).filter(m=>m.tipo==='venta').reduce((s,m)=>s+(m.puntosGanados||0),0);
+  const totalCanjes=Object.values(canjes).filter(c=>c.estado==='aprobado').length;
+  const totalVentas=Object.values(movimientos).filter(m=>m.tipo==='venta').length;
+  document.getElementById('st-clientes').textContent=totalClientes;
+  document.getElementById('st-puntos').textContent=totalPuntos;
+  document.getElementById('st-canjes').textContent=totalCanjes;
+  document.getElementById('st-ventas').textContent=totalVentas;
+  // Niveles
+  const niveles={bronce:0,plata:0,oro:0};
+  Object.values(clientes).forEach(c=>{const n=getNivel(c.puntos||0);if(niveles[n]!==undefined)niveles[n]++;});
+  document.getElementById('st-bronce').textContent=niveles.bronce;
+  document.getElementById('st-plata').textContent=niveles.plata;
+  document.getElementById('st-oro').textContent=niveles.oro;
+  renderAlarmas();renderBdays();renderMovimientos();renderResumenSolicitudes();
+}
+
+function renderAlarmas(){
+  const dias=diasSinComprar();
+  const alertaEn=Math.floor(dias*0.7);// aviso al 70% del tiempo
+  const el=document.getElementById('listaAlarmas');
+  const enRiesgo=Object.entries(clientes).filter(([,c])=>{
+    const diasDesdeCompra=diasDesde(c.ultimaCompra||c.fechaAlta||Date.now());
+    return diasDesdeCompra>=alertaEn&&(c.puntos||0)>0;
+  });
+  if(!enRiesgo.length){el.innerHTML='<div class="empty"><div class="empty-icon">✅</div>Sin alertas</div>';return;}
+  el.innerHTML=enRiesgo.map(([id,c])=>{
+    const diasDesdeCompra=diasDesde(c.ultimaCompra||c.fechaAlta||Date.now());
+    const restanDias=dias-diasDesdeCompra;
+    return`<div class="alarma-item">
+      <div class="avatar" style="width:36px;height:36px;font-size:.8rem;background:linear-gradient(135deg,#c2410c,#ea580c)">${initials(c.nombre)}</div>
+      <div class="list-info">
+        <div class="list-name">${c.nombre}</div>
+        <div class="list-sub">${c.puntos||0} pts · Sin comprar hace ${diasDesdeCompra} días</div>
+      </div>
+      <div class="list-right">
+        <span class="badge badge-red">${restanDias>0?`-${ptsDescuento()}pts en ${restanDias}d`:'Hoy se descuenta'}</span>
+      </div>
+    </div>`;}).join('');
+}
+window.renderMovimientos=function(){
+  const filtro=document.getElementById('filtroMovs')?.value||'todos';
+  const el=document.getElementById('listaMovimientos');
+  const lista=Object.entries(movimientos).filter(([,m])=>filtro==='todos'||m.tipo===filtro).sort((a,b)=>b[1].fecha-a[1].fecha).slice(0,50);
+  if(!lista.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Sin movimientos</div>';return;}
+  el.innerHTML=lista.map(([,m])=>{
+    const esVenta=m.tipo==='venta';
+    const esCanje=m.tipo==='canje';
+    const icon=esVenta?'🟢':esCanje?'🔵':'🟡';
+    const pts=esVenta?`+${m.puntosGanados} pts`:esCanje?`-${m.puntosUsados} pts`:`${m.puntosGanados>0?'+':''}${m.puntosGanados||0} pts`;
+    const color=esVenta?'var(--green)':esCanje?'var(--blue)':'var(--gray)';
+    return`<div class="mov-item">
+      <div class="mov-header">
+        <div class="mov-cliente">${icon} ${m.clienteNombre}</div>
+        <div class="mov-pts" style="color:${color}">${pts}</div>
+      </div>
+      <div class="mov-meta">${m.fechaStr||''} ${m.ticket?'· Ticket #'+m.ticket:''} ${m.monto?'· $'+m.monto.toLocaleString('es-AR'):''} ${m.premioNombre?'· '+m.premioNombre:''}</div>
+    </div>`;}).join('');
+}
+
+function cargarDatosCliente(){
+  firebase.database().ref('clientes/'+currentUser.uid).on('value',snap=>{datosCliente=snap.val();actualizarHeroCliente();});
+  firebase.database().ref('premios').on('value',snap=>{premios=snap.val()||{};});
+  firebase.database().ref('canjes').on('value',snap=>{canjes=snap.val()||{};});
+  firebase.database().ref('config').on('value',snap=>{config=snap.val()||{};});
+}
+
+function actualizarHeroCliente(){
+  if(!datosCliente)return;
+  document.getElementById('clienteNombreHero').textContent=datosCliente.nombre||'';
+  document.getElementById('clientePtsHero').textContent=datosCliente.puntos||0;
+  const nivel=getNivel(datosCliente.puntos||0);
+  const nb=document.getElementById('clienteNivelBadge');
+  nb.textContent=nivelLabel(nivel);
+  nb.style.background=nivel==='oro'?'rgba(217,119,6,.3)':nivel==='plata'?'rgba(100,116,139,.3)':nivel==='bronce'?'rgba(180,83,9,.3)':'rgba(255,255,255,.15)';
+  nb.style.color=nivel==='oro'?'#fde68a':nivel==='plata'?'#e2e8f0':nivel==='bronce'?'#fef3c7':'rgba(255,255,255,.8)';
+  const mesAct=mesActual();
+  const canjesMes=datosCliente.mesCanjes===mesAct?(datosCliente.canjesMes||0):0;
+  document.getElementById('clienteCanjesHero').textContent=canjesMes;
+  document.getElementById('clienteCanjesDisp').textContent=Math.max(0,maxCanjesMes()-canjesMes);
+  const pts=datosCliente.puntos||0;
+  const nivelInfoEl=document.getElementById('clienteNivelInfo');
+  let nivelTxt='';
+  if(nivel==='oro') nivelTxt=`<div class="alert-yellow alert">🥇 Sos cliente <strong>Oro</strong> — tenés acceso a premios exclusivos.</div>`;
+  else if(nivel==='plata'){const falta=nivelOro()-pts;nivelTxt=`<div class="alert-blue alert">🥈 Sos <strong>Plata</strong>. Te faltan <strong>${falta} puntos</strong> para ser Oro.</div>`;}
+  else if(nivel==='bronce'){const falta=nivelPlata()-pts;nivelTxt=`<div class="alert-blue alert">🥉 Sos <strong>Bronce</strong>. Te faltan <strong>${falta} puntos</strong> para ser Plata.</div>`;}
+  else{const falta=nivelBronce()-pts;nivelTxt=`<div class="alert alert-blue">Sumá <strong>${falta} puntos</strong> más para alcanzar el nivel Bronce 🥉.</div>`;}
+  nivelInfoEl.innerHTML=nivelTxt;
+  const diasUltCompra=diasDesde(datosCliente.ultimaCompra||datosCliente.fechaAlta||Date.now());
+  const diasLimite=diasSinComprar();
+  const restanDias=diasLimite-diasUltCompra;
+  const alertaEl=document.getElementById('alertaDescuento');
+  if(restanDias<=Math.floor(diasLimite*0.3)&&pts>0){
+    alertaEl.style.display='block';
+    document.getElementById('alertaDescuentoTxt').textContent=restanDias>0?`Comprá en los próximos ${restanDias} días para no perder ${ptsDescuento()} puntos.`:`Perdiste ${ptsDescuento()} puntos por inactividad.`;
+  }else alertaEl.style.display='none';
+}
+
+function renderPremiosCliente(){
+  if(!datosCliente)return;
+  const pts=datosCliente.puntos||0;
+  const nivel=getNivel(pts);
+  document.getElementById('clientePtsDisp').textContent=`⭐ Tenés ${pts} puntos · ${nivelLabel(nivel)}`;
+  const el=document.getElementById('listaPremiosCliente');
+  const nivelOrder=['standard','bronce','plata','oro'];
+  const lista=Object.entries(premios).filter(([,p])=>p.activo);
+  if(!lista.length){el.innerHTML='<div class="empty"><div class="empty-icon">🎁</div>Próximamente habrá premios</div>';return;}
+  el.innerHTML=lista.map(([id,p])=>{
+    const puedeNivel=!p.nivelMinimo||nivelOrder.indexOf(nivel)>=nivelOrder.indexOf(p.nivelMinimo);
+    const puedesPts=pts>=p.puntos;
+    const puedo=puedesPts&&puedeNivel;
+    let btnHtml='';
+    if(puedo) btnHtml=`<button class="btn-primary btn-sm btn-accent" onclick="abrirSolicitudCanje('${id}')">Canjear</button>`;
+    else if(!puedeNivel) btnHtml=`<div style="text-align:right"><span class="badge badge-gold">🔒 Solo ${nivelLabel(p.nivelMinimo)}</span><div style="font-size:.72rem;color:var(--subtext);margin-top:3px">Seguí comprando para subir de nivel</div></div>`;
+    else btnHtml=`<span class="badge badge-gray">Faltan ${p.puntos-pts} pts</span>`;
+    return`<div class="premio-card">
+      <div class="premio-img">${p.imgUrl?`<img src="${p.imgUrl}" alt="${p.nombre}" onerror="this.style.display='none'">`:''}<span style="${p.imgUrl?'display:none':''}">${p.emoji||'🎁'}</span></div>
+      <div class="premio-body">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div>
+            <div class="premio-name">${p.nombre}</div>
+            <div class="premio-pts">${p.puntos} puntos${p.nivelMinimo?' · <span class="badge badge-gold" style="font-size:.7rem">'+nivelLabel(p.nivelMinimo)+'</span>':''}</div>
+            <div style="font-size:.78rem;color:var(--subtext);margin-top:2px">${p.descripcion||''}</div>
+          </div>
+          ${btnHtml}
+        </div>
+      </div>
+    </div>`;}).join('');
+}
+
+window.abrirSolicitudCanje=id=>{
+  const p=premios[id];
+  const mesAct=mesActual();
+  const canjesMes=datosCliente.mesCanjes===mesAct?(datosCliente.canjesMes||0):0;
+  if(canjesMes>=maxCanjesMes()){showToast(`Límite de ${maxCanjesMes()} canjes/mes alcanzado`,'error');return;}
+  premioParaCanjearId=id;
+  document.getElementById('solicitarCanjeNombre').textContent=p.nombre;
+  document.getElementById('solicitarCanjeInfo').textContent=`Vas a usar ${p.puntos} puntos. Te quedarán ${(datosCliente.puntos||0)-p.puntos} pts. Queda pendiente hasta que el local apruebe.`;
+  openModal('modalSolicitarCanje');
+};
+
+function generarCodigo(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const seg=()=>Array.from({length:3},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  return`CJ-${seg()}-${seg()}`;
+}
+
+window.confirmarSolicitudCanje=async()=>{
+  if(!premioParaCanjearId)return;
+  const p=premios[premioParaCanjearId];
+  const mesAct=mesActual();
+  const nuevoPts=(datosCliente.puntos||0)-p.puntos;
+  const canjesMes=datosCliente.mesCanjes===mesAct?(datosCliente.canjesMes||0):0;
+  const codigo=generarCodigo();
+  await firebase.database().ref('clientes/'+currentUser.uid).update({puntos:nuevoPts,canjesMes:canjesMes+1,mesCanjes:mesAct});
+  const ref=await firebase.database().ref('canjes').push({clienteId:currentUser.uid,clienteNombre:datosCliente.nombre,premioId:premioParaCanjearId,premioNombre:p.nombre,puntosUsados:p.puntos,estado:'pendiente',codigo,fecha:Date.now(),fechaStr:fechaHoy()});
+  await firebase.database().ref('movimientos').push({clienteId:currentUser.uid,clienteNombre:datosCliente.nombre,tipo:'canje',premioNombre:p.nombre,puntosUsados:p.puntos,fecha:Date.now(),fechaStr:fechaHoy()});
+  closeModal('modalSolicitarCanje');
+  // Mostrar código al cliente
+  document.getElementById('codigoCanjeDisplay').textContent=codigo;
+  document.getElementById('codigoCanjePremio').textContent=p.nombre;
+  document.getElementById('codigoCanjeModal').classList.add('active');
+};
+
+async function renderRanking(){
+  const snap=await firebase.database().ref('clientes').once('value');
+  const todos=snap.val()||{};
+  const ranking=Object.entries(todos).filter(([,c])=>c.activo).sort((a,b)=>(b[1].puntos||0)-(a[1].puntos||0)).slice(0,10);
+  const el=document.getElementById('listaRanking');
+  el.innerHTML=ranking.map(([id,c],i)=>{
+    const nivel=getNivel(c.puntos||0);
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    const esYo=id===currentUser.uid;
+    return`<div class="rank-item" style="${esYo?'background:#eff6ff;border-radius:10px;padding:10px;margin:0 -4px':''}">
+      <div class="rank-num">${medal||'#'+(i+1)}</div>
+      <div class="avatar" style="width:34px;height:34px;font-size:.8rem">${initials(c.nombre)}</div>
+      <div class="list-info">
+        <div class="list-name">${c.nombre}${esYo?' <span style="color:var(--blue);font-size:.72rem">(vos)</span>':''}</div>
+        <div style="margin-top:2px"><span class="badge ${nivelColor(nivel)}">${nivelLabel(nivel)}</span></div>
+      </div>
+      <div class="pts-num">${c.puntos||0} pts</div>
+    </div>`;}).join('');
+  document.getElementById('alertaRankingReglas').innerHTML=`📅 Cada <strong>${diasSinComprar()} días</strong> sin comprar se descuentan <strong>${ptsDescuento()} puntos</strong>.`;
+}
+
+function renderMisCanjes(){
+  const mis=Object.entries(canjes).filter(([,c])=>c.clienteId===currentUser.uid).sort((a,b)=>b[1].fecha-a[1].fecha);
+  const el=document.getElementById('misCanjes');
+  if(!mis.length){el.innerHTML='<div class="empty"><div class="empty-icon">🎁</div>Aún no hiciste canjes</div>';return;}
+  el.innerHTML=mis.map(([,c])=>`
+    <div class="canje-item">
+      <div class="canje-header">
+        <div><div class="canje-name">${c.premioNombre}</div><div class="canje-meta">${c.puntosUsados} pts · ${c.fechaStr}</div></div>
+        <span class="badge ${c.estado==='aprobado'?'badge-green':c.estado==='pendiente'?'badge-yellow':'badge-red'}">${c.estado==='aprobado'?'✅ OK':c.estado==='pendiente'?'⏳ Pendiente':'✕ Rechazado'}</span>
+      </div>
+    </div>`).join('');
+}
+
+
+// ============ SOLICITUD PUNTOS (CLIENTE) ============
+window.enviarSolicitudPuntos=async()=>{
+  const ticket=document.getElementById('solTicket').value.trim().toUpperCase();
+  if(!ticket){showToast('Ingresá el número de ticket','error');return;}
+  
+  const snap=await firebase.database().ref('solicitudesPuntos').once('value');
+  const todas=snap.val()||{};
+  
+  // Ticket ya usado
+  const yaUsado=Object.values(todas).some(s=>s.ticket===ticket&&s.estado!=='rechazado');
+  if(yaUsado){showToast('❌ Este ticket ya fue registrado','error');return;}
+  
+  // Máx 2 pendientes
+  const pendientes=Object.values(todas).filter(s=>s.clienteId===currentUser.uid&&s.estado==='pendiente');
+  if(pendientes.length>=2){showToast('Tenés 2 solicitudes pendientes. Esperá que se procesen antes de enviar otra.','error');return;}
+  
+  await firebase.database().ref('solicitudesPuntos').push({
+    clienteId:currentUser.uid,
+    clienteNombre:datosCliente.nombre,
+    clienteEmail:currentUser.email,
+    ticket,
+    estado:'pendiente',
+    fecha:Date.now(),
+    fechaStr:fechaHoy(),
+    motivo:''
+  });
+  document.getElementById('solTicket').value='';
+  showToast('✅ Solicitud enviada','success');
+  renderMisSolicitudesPuntos();
+};
+
+function renderMisSolicitudesPuntos(){
+  firebase.database().ref('solicitudesPuntos').once('value').then(snap=>{
+    const todas=snap.val()||{};
+    const mis=Object.entries(todas).filter(([,s])=>s.clienteId===currentUser.uid).sort((a,b)=>b[1].fecha-a[1].fecha);
+    const el=document.getElementById('misSolicitudesPuntos');
+    
+    // Stats row
+    const aprobadas=mis.filter(([,s])=>s.estado==='aprobado').length;
+    const pendientes=mis.filter(([,s])=>s.estado==='pendiente').length;
+    const rechazadas=mis.filter(([,s])=>s.estado==='rechazado').length;
+    const statsHtml=mis.length?`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:#f0fdf4;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#16a34a">${aprobadas}</div><div style="font-size:.7rem;color:var(--subtext)">Aprobadas</div></div>
+      <div style="background:#fefce8;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#a16207">${pendientes}</div><div style="font-size:.7rem;color:var(--subtext)">Pendientes</div></div>
+      <div style="background:#fee2e2;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#dc2626">${rechazadas}</div><div style="font-size:.7rem;color:var(--subtext)">Rechazadas</div></div>
+    </div>`:'';
+
+    if(!mis.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Sin solicitudes</div>';return;}
+    el.innerHTML=statsHtml+mis.map(([,s])=>{
+      const rechazado=s.estado==='rechazado';
+      const aprobado=s.estado==='aprobado';
+      return`<div class="canje-item">
+        <div class="canje-header">
+          <div style="flex:1">
+            <div class="canje-name">Ticket #${s.ticket}</div>
+            <div class="canje-meta">${s.fechaStr}${s.monto?' · $'+s.monto.toLocaleString('es-AR'):''}</div>
+            ${aprobado?`<div style="font-size:.8rem;color:#16a34a;margin-top:3px;font-weight:600">+${s.puntosAcreditados} puntos acreditados</div>`:''}
+            ${rechazado&&s.motivo?`<div style="font-size:.8rem;color:#dc2626;margin-top:4px;background:#fee2e2;padding:6px 10px;border-radius:8px">⚠️ ${s.motivo}</div>`:''}
+            ${rechazado&&!s.motivo?`<div style="font-size:.8rem;color:#dc2626;margin-top:3px">No autorizado</div>`:''}
+          </div>
+          <span class="badge ${aprobado?'badge-green':s.estado==='pendiente'?'badge-yellow':'badge-red'}" style="flex-shrink:0">
+            ${aprobado?'✅ OK':s.estado==='pendiente'?'⏳ Pendiente':'✕ No autorizado'}
+          </span>
+        </div>
+      </div>`;}).join('');
+  });
+}
+
+// ============ SOLICITUDES PUNTOS (ADMIN) ============
+function renderSolicitudesPuntos(){
+  firebase.database().ref('solicitudesPuntos').once('value').then(snap=>{
+    const todas=snap.val()||{};
+    const lista=Object.entries(todas).sort((a,b)=>b[1].fecha-a[1].fecha);
+    const el=document.getElementById('listaSolicitudesPuntos');
+    if(!el)return;
+
+    // Stats totales y por hora/día
+    const hoy=fechaHoy();
+    const ahora=Date.now();
+    const hace1h=ahora-3600000;
+    const pendTotales=lista.filter(([,s])=>s.estado==='pendiente').length;
+    const hoy_=lista.filter(([,s])=>s.fechaStr===hoy).length;
+    const ultima1h=lista.filter(([,s])=>s.fecha>hace1h).length;
+    const aprobHoy=lista.filter(([,s])=>s.fechaStr===hoy&&s.estado==='aprobado').length;
+    const rechHoy=lista.filter(([,s])=>s.fechaStr===hoy&&s.estado==='rechazado').length;
+
+    const statsHtml=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:#fefce8;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;color:#a16207">${pendTotales}</div><div style="font-size:.68rem;color:var(--subtext)">Pendientes</div></div>
+      <div style="background:#eff6ff;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;color:var(--blue)">${ultima1h}</div><div style="font-size:.68rem;color:var(--subtext)">Última hora</div></div>
+      <div style="background:var(--light);border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;color:var(--navy)">${hoy_}</div><div style="font-size:.68rem;color:var(--subtext)">Hoy total</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:#f0fdf4;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#16a34a">✅ ${aprobHoy}</div><div style="font-size:.68rem;color:var(--subtext)">Aprobadas hoy</div></div>
+      <div style="background:#fee2e2;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#dc2626">✕ ${rechHoy}</div><div style="font-size:.68rem;color:var(--subtext)">Rechazadas hoy</div></div>
+    </div>`;
+
+    const pendientes=lista.filter(([,s])=>s.estado==='pendiente');
+    if(!pendientes.length){el.innerHTML=statsHtml+'<div class="empty"><div class="empty-icon">📋</div>Sin solicitudes pendientes</div>';return;}
+
+    const motivosFijos=[
+      'Ticket no encontrado en el sistema',
+      'El monto no coincide con el ticket',
+      'Ticket ya fue cargado por otro cliente',
+      'Ticket fuera del período válido',
+    ];
+
+    el.innerHTML=statsHtml+pendientes.map(([id,s])=>`
+      <div class="canje-item">
+        <div class="canje-header">
+          <div>
+            <div class="canje-name">${s.clienteNombre}</div>
+            <div class="canje-meta" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              <span>Ticket <strong>#${s.ticket}</strong></span>
+              <span>·</span><span>${s.fechaStr}</span>
+              <span>·</span><span style="font-size:.72rem;color:var(--subtext)">${new Date(s.fecha).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>
+            </div>
+          </div>
+          <span class="badge badge-yellow">Pendiente</span>
+        </div>
+        <div style="margin-top:10px">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+            <input type="number" placeholder="Monto $" id="monto_${id}" style="width:110px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.85rem" inputmode="numeric">
+            <button class="btn-primary btn-sm" onclick="aprobarSolicitudPuntos('${id}')">✅ Aprobar</button>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <select id="motivoRechazo_${id}" style="flex:1;min-width:180px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.8rem;font-family:'DM Sans',sans-serif">
+              ${motivosFijos.map(m=>`<option value="${m}">${m}</option>`).join('')}
+              <option value="">Otro (escribir abajo)</option>
+            </select>
+            <button class="btn-outline btn-sm" style="color:var(--red);flex-shrink:0" onclick="rechazarSolicitudPuntos('${id}')">✕ Rechazar</button>
+          </div>
+          <input type="text" id="motivoCustom_${id}" placeholder="Motivo personalizado (opcional)" style="width:100%;margin-top:6px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.8rem;display:none">
+        </div>
+      </div>`).join('');
+
+    // Show custom input when "Otro" selected
+    pendientes.forEach(([id])=>{
+      const sel=document.getElementById('motivoRechazo_'+id);
+      if(sel) sel.onchange=()=>{
+        const custom=document.getElementById('motivoCustom_'+id);
+        if(custom) custom.style.display=sel.value===''?'block':'none';
+      };
+    });
+  });
+}
+
+window.aprobarSolicitudPuntos=async(id)=>{
+  const montoEl=document.getElementById('monto_'+id);
+  const monto=parseInt(montoEl?.value)||0;
+  if(monto<=0){showToast('Ingresá el monto de la compra','error');return;}
+  const snap=await firebase.database().ref('solicitudesPuntos/'+id).once('value');
+  const s=snap.val();
+  const pts=Math.floor(monto/pesosPorPunto());
+  const clienteSnap=await firebase.database().ref('clientes/'+s.clienteId).once('value');
+  const c=clienteSnap.val()||{};
+  const nuevoPts=(c.puntos||0)+pts;
+  await firebase.database().ref('clientes/'+s.clienteId).update({puntos:nuevoPts,ultimaCompra:Date.now()});
+  await firebase.database().ref('solicitudesPuntos/'+id).update({estado:'aprobado',monto,puntosAcreditados:pts,fechaAprobado:fechaHoy()});
+  await firebase.database().ref('movimientos').push({clienteId:s.clienteId,clienteNombre:s.clienteNombre,tipo:'venta',monto,ticket:s.ticket,puntosGanados:pts,fecha:Date.now(),fechaStr:fechaHoy(),viaApp:true});
+  showToast(`✅ +${pts} pts acreditados a ${s.clienteNombre}`,'success');
+  renderSolicitudesPuntos();
+};
+
+window.rechazarConMotivo=async(id,motivo)=>{
+  const motivoFinal=motivo||'Ticket no verificado en nuestro sistema';
+  await firebase.database().ref('solicitudesPuntos/'+id).update({estado:'rechazado',fechaRechazo:fechaHoy(),motivo:motivoFinal});
+  showToast('Solicitud rechazada','');
+  renderSolicitudesPuntos();
+};
+
+window.rechazarSolicitudPuntos=async(id)=>{
+  const sel=document.getElementById('motivoRechazo_'+id);
+  const customEl=document.getElementById('motivoCustom_'+id);
+  let motivo=sel?sel.value:'';
+  if(!motivo&&customEl&&customEl.value.trim()) motivo=customEl.value.trim();
+  const motivoFinal=motivo||'Ticket no verificado en nuestro sistema';
+  await firebase.database().ref('solicitudesPuntos/'+id).update({estado:'rechazado',fechaRechazo:fechaHoy(),motivo:motivoFinal});
+  showToast('Solicitud rechazada · Cliente notificado','');
+  renderSolicitudesPuntos();
+};
+
+// ============ GIFTCARDS ============
+function gcCodigo(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const seg=()=>Array.from({length:3},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  return`GC-${seg()}-${seg()}`;
+}
+
+window.crearGiftcard=async()=>{
+  const dest=document.getElementById('gcDestinatario').value.trim();
+  const valor=parseInt(document.getElementById('gcValor').value)||0;
+  const mensaje=document.getElementById('gcMensaje').value.trim();
+  const venc=document.getElementById('gcVencimiento').value;
+  const tel=document.getElementById('gcTel').value.trim();
+  const err=document.getElementById('gcError');
+  if(!dest||valor<=0){err.textContent='Completá destinatario y valor';err.style.display='block';return;}
+  const codigo=gcCodigo();
+  await firebase.database().ref('giftcards').push({codigo,destinatario:dest,valor,mensaje,vencimiento:venc,tel,estado:'activa',fecha:Date.now(),fechaStr:fechaHoy()});
+  closeModal('modalGiftcard');
+  ['gcDestinatario','gcValor','gcMensaje','gcVencimiento','gcTel'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('gcCodigoDisplay').textContent=codigo;
+  document.getElementById('gcValorDisplay').textContent='$'+valor.toLocaleString('es-AR');
+  const waBtn=document.getElementById('gcWaBtn');
+  if(tel){
+    const msg=encodeURIComponent(`🎁 Tu GiftCard Club Javicard\nCódigo: ${codigo}\nValor: $${valor.toLocaleString('es-AR')}${mensaje?' · '+mensaje:''}`);
+    waBtn.innerHTML=`<a href="https://wa.me/54${tel}?text=${msg}" target="_blank" class="btn-primary btn-accent" style="display:inline-block;text-decoration:none;padding:12px 20px;border-radius:10px">📱 Enviar por WhatsApp</a>`;
+  }else waBtn.innerHTML='';
+  openModal('modalGiftcardCreada');
+};
+
+function renderGiftcards(){
+  firebase.database().ref('giftcards').once('value').then(snap=>{
+    const todas=snap.val()||{};
+    const el=document.getElementById('listaGiftcards');
+    if(!el)return;
+    const lista=Object.entries(todas).sort((a,b)=>b[1].fecha-a[1].fecha);
+    if(!lista.length){el.innerHTML='<div class="empty"><div class="empty-icon">🎁</div>Sin GiftCards</div>';return;}
+    el.innerHTML=lista.map(([id,g])=>`
+      <div class="list-item">
+        <div class="avatar" style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--navy);font-size:.7rem">GC</div>
+        <div class="list-info">
+          <div class="list-name">${g.codigo}</div>
+          <div class="list-sub">${g.destinatario} · ${g.fechaStr}${g.mensaje?' · '+g.mensaje:''}</div>
+        </div>
+        <div class="list-right">
+          <div class="pts-num" style="color:var(--accent)">$${(g.valor||0).toLocaleString('es-AR')}</div>
+          <div style="margin-top:3px"><span class="badge ${g.estado==='activa'?'badge-green':'badge-gray'}">${g.estado}</span></div>
+        </div>
+      </div>`).join('');
+  });
+}
+
+function renderResumenSolicitudes(){
+  const el=document.getElementById('statsResumenSolicitudes');
+  if(!el)return;
+  firebase.database().ref('solicitudesPuntos').once('value').then(snap=>{
+    const todas=snap.val()||{};
+    const hoy=fechaHoy();
+    const ahora=Date.now();
+    const hace1h=ahora-3600000;
+    const hoyList=Object.entries(todas).filter(([,s])=>s.fechaStr===hoy);
+    const ultima1h=Object.entries(todas).filter(([,s])=>s.fecha>hace1h);
+    if(!hoyList.length){el.innerHTML='<div class="empty" style="padding:16px"><div class="empty-icon" style="font-size:1.5rem">📋</div>Sin solicitudes hoy</div>';return;}
+    el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <div style="background:#eff6ff;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:var(--blue)">${ultima1h.length}</div><div style="font-size:.68rem;color:var(--subtext)">Última hora</div></div>
+      <div style="background:#fefce8;border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:#a16207">${hoyList.filter(([,s])=>s.estado==='pendiente').length}</div><div style="font-size:.68rem;color:var(--subtext)">Pendientes</div></div>
+      <div style="background:var(--light);border-radius:10px;padding:10px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:var(--navy)">${hoyList.length}</div><div style="font-size:.68rem;color:var(--subtext)">Total hoy</div></div>
+    </div>`+hoyList.slice(0,5).map(([,s])=>`
+      <div class="list-item" style="padding:8px 0">
+        <div class="avatar" style="width:32px;height:32px;font-size:.75rem">${s.clienteNombre?s.clienteNombre[0].toUpperCase():'?'}</div>
+        <div class="list-info">
+          <div class="list-name" style="font-size:.85rem">${s.clienteNombre} · #${s.ticket}</div>
+          <div class="list-sub">${new Date(s.fecha).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+        <span class="badge ${s.estado==='aprobado'?'badge-green':s.estado==='pendiente'?'badge-yellow':'badge-red'}" style="font-size:.68rem">${s.estado==='aprobado'?'✅':s.estado==='pendiente'?'⏳':'✕'}</span>
+      </div>`).join('');
+  });
+}
+
+document.getElementById('fechaHoyLabel').textContent=fechaHoy();
+</script>
+</body>
+</html>
